@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+:root {
+  --bg-primary: #0f0f1a;
+  --bg-secondary: #1a1b2e;
+  --bg-card: #222340;
+  --bg-card-hover: #2a2b4a;
+  --text-primary: #e8e8f0;
+  --text-secondary: #9898b0;
+  --accent-purple: #8b5cf6;
+  --accent-pink: #ec4899;
+  --quick-win: #ff4d4f;
+  --obstacle: #fa8c16;
+  --relaxed: #52c41a;
+  --long-term: #1890ff;
+  --glass-bg: rgba(34, 35, 64, 0.7);
+  --glass-border: rgba(139, 92, 246, 0.2);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #1a0a2e 50%, #0f1a2e 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.5);
+}

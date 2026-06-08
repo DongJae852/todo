@@ -1,0 +1,861 @@
+/* ===== App Container ===== */
+.app-container {
+  max-width: 98vw;
+  margin: 0 auto;
+  padding: 6px 12px;
+  min-height: 100vh;
+}
+
+/* ===== Header ===== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.header-title {
+  margin: 0 !important;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px;
+}
+
+.header-emoji {
+  -webkit-text-fill-color: initial;
+}
+
+.header-stat-icon {
+  font-size: 20px;
+  color: var(--text-secondary);
+}
+
+.header-btn {
+  border-color: var(--glass-border) !important;
+  color: var(--text-primary) !important;
+}
+
+.header-add-btn {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+  border: none !important;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.header-add-btn:hover {
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5) !important;
+  transform: translateY(-1px);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  min-height: calc(100vh - 220px);
+  align-items: stretch;
+}
+
+.calendar-section {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-section {
+  flex: 0 0 380px;
+  min-width: 380px;
+  max-width: 380px;
+}
+
+/* ===== Calendar ===== */
+.todo-calendar-wrapper {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 16px;
+  height: 100%;
+}
+
+/* ===== 달력 유동적 행(Row) 높이 조절 (4주, 5주, 6주에 대응하여 빈 행 숨김) ===== */
+.todo-calendar-wrapper.weeks-5 .ant-picker-content tbody tr:nth-child(6) {
+  display: none !important;
+}
+.todo-calendar-wrapper.weeks-4 .ant-picker-content tbody tr:nth-child(5),
+.todo-calendar-wrapper.weeks-4 .ant-picker-content tbody tr:nth-child(6) {
+  display: none !important;
+}
+
+/* Custom Calendar Header Styling */
+.todo-calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px 16px 12px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 12px;
+}
+
+.calendar-header-title-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+  font-size: 18px !important;
+  padding: 4px 8px !important;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.calendar-header-title-btn:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.todo-calendar .ant-picker-calendar-header {
+  display: none !important; /* 기본 헤더는 완전 숨김 */
+}
+
+.todo-calendar .ant-picker-cell-selected .ant-picker-cell-inner {
+  background: rgba(139, 92, 246, 0.3) !important;
+  border-radius: 8px;
+}
+
+.todo-calendar .ant-picker-cell-today .ant-picker-cell-inner::before {
+  border-color: #8b5cf6 !important;
+  border-radius: 8px;
+}
+
+.todo-calendar .ant-picker-cell {
+  height: 120px !important;
+}
+
+.todo-calendar .ant-picker-cell-inner {
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  overflow: visible !important;
+}
+
+.todo-calendar .ant-picker-calendar-date-content {
+  height: calc(100% - 24px) !important;
+  margin: 0 !important;
+  overflow: visible !important;
+}
+
+.calendar-cell-content {
+  padding: 2px 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: visible !important;
+}
+
+.calendar-todos-scroll-area {
+  flex: 1;
+  max-height: 98px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 2px;
+}
+
+/* Scrollbar Customization for Date Cells */
+.calendar-todos-scroll-area::-webkit-scrollbar {
+  width: 4px;
+}
+.calendar-todos-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.calendar-todos-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 2px;
+}
+.calendar-todos-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
+}
+
+.calendar-todo-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.calendar-todo-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendar-todo-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.calendar-more {
+  font-size: 10px;
+  color: var(--accent-purple);
+  margin-top: 2px;
+}
+
+.calendar-completed-count {
+  font-size: 10px;
+  color: var(--relaxed);
+  opacity: 0.7;
+}
+
+/* ===== Weekend / Holiday Colors ===== */
+
+/* 일요일 헤더 (첫 번째 컬럼) - 빨간색 */
+.todo-calendar .ant-picker-content thead th:first-child {
+  color: #ff4d4f !important;
+}
+
+/* 토요일 헤더 (마지막 컬럼) - 파란색 */
+.todo-calendar .ant-picker-content thead th:last-child {
+  color: #4096ff !important;
+}
+
+/* 일요일 날짜 숫자 - 빨간색 */
+.todo-calendar .ant-picker-content tbody td:first-child .ant-picker-cell-inner .ant-picker-calendar-date-value {
+  color: #ff4d4f !important;
+}
+.todo-calendar .ant-picker-content tbody tr td:first-child .ant-picker-calendar-date-value {
+  color: #ff4d4f !important;
+}
+
+/* 토요일 날짜 숫자 - 파란색 */
+.todo-calendar .ant-picker-content tbody td:last-child .ant-picker-cell-inner .ant-picker-calendar-date-value {
+  color: #4096ff !important;
+}
+.todo-calendar .ant-picker-content tbody tr td:last-child .ant-picker-calendar-date-value {
+  color: #4096ff !important;
+}
+
+/* nth-child 기반 일/토 색상 (antd v5 호환) */
+.todo-calendar .ant-picker-cell:nth-child(7n+1) .ant-picker-calendar-date-value {
+  color: #ff4d4f !important;
+}
+.todo-calendar .ant-picker-cell:nth-child(7n) .ant-picker-calendar-date-value {
+  color: #4096ff !important;
+}
+
+/* 주말/휴일 셀 배경 */
+.off-day-cell {
+  opacity: 0.6;
+}
+
+/* 휴일 및 완료율 배지들을 묶는 헤더 영역 */
+.calendar-cell-header-badges {
+  position: absolute;
+  top: -21px;
+  left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+  max-width: 75%;
+}
+
+.calendar-holiday-badge {
+  font-size: 9px;
+  color: #ff4d4f;
+  font-weight: 600;
+  background: rgba(255, 77, 79, 0.08);
+  border: 1px solid rgba(255, 77, 79, 0.15);
+  padding: 0px 4px;
+  border-radius: 4px;
+  line-height: 1.3;
+  white-space: nowrap;
+  max-width: 90px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.calendar-course-badge {
+  font-size: 9px;
+  border-radius: 4px;
+  line-height: 1.3;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.calendar-progress-badge {
+  font-size: 11px;
+  color: #e9d5ff; /* 매우 선명하고 밝은 연보라색 */
+  font-weight: 700;
+  background: rgba(139, 92, 246, 0.22); /* 고대비 배경 투명도 */
+  border: 1px solid rgba(168, 85, 247, 0.45); /* 선명한 테두리선 */
+  padding: 1px 5px;
+  border-radius: 4px;
+  line-height: 1.3;
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(139, 92, 246, 0.2);
+}
+
+.calendar-progress-badge.all-done {
+  color: #a7f3d0; /* 선명하고 밝은 연초록색 */
+  background: rgba(82, 196, 26, 0.22); /* 고대비 초록 배경 */
+  border-color: rgba(82, 196, 26, 0.45); /* 선명한 초록 테두리선 */
+  box-shadow: 0 1px 4px rgba(82, 196, 26, 0.2);
+}
+
+/* 지정된 커스텀 휴일인 날짜 숫자를 일요일과 똑같은 선명한 빨간색으로 자동 통합 */
+.ant-picker-cell-inner:has(.calendar-holiday-badge) .ant-picker-calendar-date-value {
+  color: #ff4d4f !important;
+  font-weight: bold;
+}
+
+/* ===== Holiday Manager Modal ===== */
+.holiday-modal .ant-modal-content {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px !important;
+}
+
+.holiday-modal .ant-modal-header {
+  background: transparent !important;
+}
+
+.holiday-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+}
+
+.holiday-content {
+  display: flex;
+  gap: 24px;
+  min-height: 380px;
+}
+
+.holiday-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.holiday-mini-calendar {
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 8px;
+  background: var(--bg-card);
+}
+
+.holiday-right {
+  flex: 1;
+  min-width: 220px;
+}
+
+.holiday-list {
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.holiday-group {
+  margin-bottom: 12px;
+}
+
+.holiday-group-title {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.holiday-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.holiday-tag {
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  padding: 2px 10px !important;
+}
+
+.holiday-calendar-mark {
+  text-align: center;
+  font-size: 8px;
+  line-height: 1;
+}
+
+/* ===== Day Detail Off-Day Notice ===== */
+.day-detail-off-notice {
+  background: rgba(255, 77, 79, 0.1);
+  border: 1px solid rgba(255, 77, 79, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* ===== Day Detail Panel ===== */
+.day-detail-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 14px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.day-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.day-detail-title {
+  margin: 0 !important;
+  color: var(--text-primary) !important;
+}
+
+.day-detail-tags {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.day-detail-add-btn {
+  flex-shrink: 0;
+}
+
+.day-detail-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.day-detail-empty {
+  margin-top: 40px;
+}
+
+.day-detail-empty .ant-empty-description {
+  color: var(--text-secondary);
+}
+
+.empty-text {
+  color: var(--text-secondary) !important;
+}
+
+/* ===== Todo Item ===== */
+.todo-item-card {
+  margin-bottom: 10px;
+  background: var(--bg-card) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-left: 4px solid !important;
+  border-radius: 10px !important;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.2s ease, background 0.2s ease, border-color 0.2s ease !important;
+  cursor: default;
+}
+
+.todo-item-card:hover {
+  background: var(--bg-card-hover) !important;
+  transform: translateX(2px);
+}
+
+.todo-item-card.completed {
+  opacity: 0.5;
+}
+
+.todo-item-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.todo-item-left {
+  padding-top: 2px;
+}
+
+.todo-item-center {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo-item-title-row {
+  margin-bottom: 4px;
+}
+
+.todo-item-title {
+  font-size: 14px;
+  color: var(--text-primary) !important;
+  word-break: break-word;
+}
+
+.completed-text {
+  text-decoration: line-through !important;
+  opacity: 0.6;
+}
+
+.todo-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.quadrant-tag {
+  font-size: 11px !important;
+  border-radius: 6px !important;
+}
+
+.recurring-tag {
+  font-size: 11px !important;
+  border-radius: 6px !important;
+}
+
+.todo-item-difficulty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.difficulty-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.difficulty-bar {
+  flex: 1;
+}
+
+.todo-item-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.todo-action-btn {
+  color: var(--text-secondary) !important;
+}
+
+.todo-action-btn:hover {
+  color: var(--accent-purple) !important;
+}
+
+/* ===== Priority Matrix ===== */
+.priority-matrix-wrapper {
+  margin-top: 0;
+}
+
+.matrix-collapse {
+  background: transparent !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.matrix-collapse .ant-collapse-header {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px);
+}
+
+.matrix-collapse .ant-collapse-content {
+  background: var(--glass-bg) !important;
+}
+
+.matrix-collapse-title {
+  color: var(--text-primary) !important;
+}
+
+.priority-matrix-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 4px;
+}
+
+.matrix-cell {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 10px !important;
+}
+
+.matrix-cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.matrix-cell-count {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.matrix-cell-desc {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.matrix-cell-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.matrix-item-title {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.matrix-more {
+  font-size: 11px;
+}
+
+.matrix-empty {
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ===== Todo Form Modal ===== */
+.todo-form-modal .ant-modal-content {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px !important;
+}
+
+.todo-form-modal .ant-modal-header {
+  background: transparent !important;
+}
+
+.todo-form-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .detail-section {
+    min-width: unset;
+  }
+
+  .app-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .header-center {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
+
+  .priority-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.todo-item-card {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ===== Project Duration Span Banners ===== */
+.project-span-banner {
+  margin: 1px 0;
+  padding: 2px 6px;
+  font-size: 11px;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.project-span-banner:hover {
+  filter: brightness(1.2);
+  transform: scale(1.02);
+}
+
+.project-banner-start {
+  border-radius: 6px 0 0 6px;
+  border-right: none;
+}
+
+.project-banner-middle {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.project-banner-end {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.project-banner-single {
+  border-radius: 6px;
+}
+
+.project-banner-title {
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+
+.completed-banner {
+  opacity: 0.45;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border-left-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Delete option radio padding */
+.delete-radio-option {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid var(--glass-border) !important;
+  transition: all 0.2s ease;
+  display: flex !important;
+  align-items: flex-start !important;
+}
+.delete-radio-option:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+.delete-radio-option.ant-radio-wrapper-checked {
+  background: rgba(139, 92, 246, 0.06) !important;
+  border-color: #8b5cf6 !important;
+}
+
+/* ===== Calendar Header & Navigation ===== */
+.todo-calendar-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  margin-bottom: 20px !important;
+  padding: 8px 0 !important;
+  width: 100% !important;
+}
+
+.calendar-nav-controls {
+  display: inline-flex !important;
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  padding: 2px 4px !important;
+  gap: 4px !important;
+}
+
+.calendar-header-title-btn {
+  color: var(--text-primary) !important;
+}
+.calendar-header-title-btn:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-radius: 6px !important;
+}
+
+.calendar-today-btn {
+  font-size: 12px !important;
+  height: 32px !important;
+  padding: 4px 14px !important;
+  background: rgba(139, 92, 246, 0.1) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  color: #c084fc !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.calendar-today-btn:hover {
+  background: rgba(139, 92, 246, 0.2) !important;
+  border-color: rgba(139, 92, 246, 0.4) !important;
+  color: #e9d5ff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15) !important;
+}
+
+.calendar-today-btn:active {
+  transform: translateY(0) !important;
+}
+
+/* ===== Period DatePicker Custom Layout & Alignment ===== */
+.period-datepicker-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+.period-datepicker-separator {
+  color: var(--text-secondary) !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  width: 24px !important;
+  text-align: center !important;
+  display: inline-block !important;
+}
+
+/* DatePicker 내부 날짜 인풋 가로 중앙 정렬 */
+.ant-picker {
+  text-align: center !important;
+}
+
+.ant-picker-input {
+  text-align: center !important;
+}
+
+.ant-picker-input > input {
+  text-align: center !important;
+}
+
