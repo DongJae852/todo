@@ -1,32 +1,42 @@
 name: Firebase Daily Backup
 
+
 on:
   schedule:
     # 매일 KST 03:00 = UTC 18:00 (전날)
-    - cron: '0 18 * * *'
+    - cron: '0 18 * * *'→ Runs at 18:00
+
   workflow_dispatch:
+
 
 permissions:
   contents: write
 
+
 jobs:
   backup:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
+
       - name: Install Python deps
         run: pip install --quiet firebase-admin
+
 
       - name: Compute date (KST)
         id: date
         run: echo "kst=$(TZ=Asia/Seoul date +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+
 
       - name: Dump Firestore to JSON
         env:
@@ -34,95 +44,3 @@ jobs:
           KST_DATE: ${{ steps.date.outputs.kst }}
         run: |
           if [ -z "$SA_JSON" ]; then
-            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is empty"
-            exit 1
-          fi
-
-          mkdir -p backups
-          python - <<'PY'
-          import json, os, sys
-          import firebase_admin
-          from firebase_admin import credentials, firestore
-          from datetime import datetime
-
-          sa_raw = os.environ.get('SA_JSON', '').strip()
-          try:
-              sa_info = json.loads(sa_raw)
-          except json.JSONDecodeError as e:
-              print(f"::error::Invalid JSON in FIREBASE_SERVICE_ACCOUNT secret: {e}", file=sys.stderr)
-              sys.exit(1)
-
-          cred = credentials.Certificate(sa_info)
-          firebase_admin.initialize_app(cred)
-          db = firestore.client()
-
-          backup = {}
-          total_docs = 0
-
-          for col_ref in db.collections():
-              col_name = col_ref.id
-              docs = {}
-              for doc in col_ref.stream():
-                  doc_dict = doc.to_dict()
-                  docs[doc.id] = doc_dict
-                  total_docs += 1
-              backup[col_name] = docs
-              print(f"  {col_name}: {len(docs)} docs")
-
-          kst_date = os.environ['KST_DATE']
-          out_path = f"backups/db-{kst_date}.json"
-
-          def json_serial(obj):
-              if hasattr(obj, 'isoformat'):
-                  return obj.isoformat()
-              if hasattr(obj, 'latitude'):
-                  return {'lat': obj.latitude, 'lng': obj.longitude}
-              if isinstance(obj, bytes):
-                  return obj.decode('utf-8', errors='replace')
-              raise TypeError(f"Type {type(obj)} not serializable")
-
-          with open(out_path, 'w', encoding='utf-8') as f:
-              json.dump(backup, f, default=json_serial, ensure_ascii=False, indent=2)
-
-          size = os.path.getsize(out_path)
-          print(f"\nOK: wrote {out_path} ({size} bytes, {total_docs} docs, {len(backup)} collections)")
-          PY
-
-          echo "Backup file size:"
-          ls -lh backups/
-
-      - name: Upload backup as artifact (3-day retention)
-        uses: actions/upload-artifact@v4
-        with:
-          name: firestore-backup-${{ steps.date.outputs.kst }}
-          path: backups/db-${{ steps.date.outputs.kst }}.json
-          retention-days: 3
-
-      - name: Clean old backups (keep last 3 days)
-        run: |
-          cd backups
-          ls -1 db-*.json 2>/dev/null | sort -r | tail -n +4 | xargs -r rm -v
-          echo "Remaining backups:"
-          ls -lh db-*.json 2>/dev/null || echo "  (none)"
-
-      - name: Update heartbeat log
-        run: |
-          mkdir -p .backup-meta
-          touch .backup-meta/log.txt
-          FSIZE=$(stat --printf="%s" "backups/db-${{ steps.date.outputs.kst }}.json" 2>/dev/null || echo "0")
-          FSIZE_KB=$((FSIZE / 1024))
-          echo "${{ steps.date.outputs.kst }} OK (${FSIZE_KB} KB)" >> .backup-meta/log.txt
-          tail -n 90 .backup-meta/log.txt > .backup-meta/log.tmp
-          mv .backup-meta/log.tmp .backup-meta/log.txt
-
-      - name: Commit backups + heartbeat
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add backups/ .backup-meta/log.txt
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore(backup): firestore ${{ steps.date.outputs.kst }}"
-            git push
-          fi
