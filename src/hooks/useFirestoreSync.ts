@@ -182,12 +182,29 @@ export function useFirestoreSync({
     doInitialSync();
   }, []);
 
+  // Refs for tracking absolute latest state to avoid listener re-subscription
+  const latestTodosRef = useRef(todos);
+  const latestHolidaysRef = useRef(holidays);
+  const latestCourseTasksRef = useRef(courseTasks);
+  const latestCompletedRef = useRef(completedCourseTasks);
+  const latestExcludedRef = useRef(excludedCourseTasks);
+
+  useEffect(() => {
+    latestTodosRef.current = todos;
+    latestHolidaysRef.current = holidays;
+    latestCourseTasksRef.current = courseTasks;
+    latestCompletedRef.current = completedCourseTasks;
+    latestExcludedRef.current = excludedCourseTasks;
+  }, [todos, holidays, courseTasks, completedCourseTasks, excludedCourseTasks]);
+
   // 2. Real-time Remote Listener (to capture updates from other devices)
   useEffect(() => {
-    if (!isInitialSyncDone.current) return;
+    if (isSyncing) return;
 
     // Listen for remote todo changes
     const unsubTodos = onSnapshot(collection(db, 'todos'), (snapshot) => {
+      // Ignore local optimistic writes to prevent race conditions
+      if (snapshot.metadata.hasPendingWrites) return;
       if (isSyncingFromRemote.current) return;
       
       const remoteTodos: Todo[] = [];
@@ -195,11 +212,12 @@ export function useFirestoreSync({
         remoteTodos.push(doc.data() as Todo);
       });
 
-      const localIds = todos.map(t => t.id).sort().join(',');
+      const currentTodos = latestTodosRef.current;
+      const localIds = currentTodos.map(t => t.id).sort().join(',');
       const remoteIds = remoteTodos.map(t => t.id).sort().join(',');
       
       const isDifferent = localIds !== remoteIds || 
-        JSON.stringify(todos) !== JSON.stringify(remoteTodos);
+        JSON.stringify(currentTodos) !== JSON.stringify(remoteTodos);
 
       if (isDifferent) {
         console.log('Remote todos changed. Syncing to local...');
@@ -212,6 +230,7 @@ export function useFirestoreSync({
 
     // Listen for remote holiday changes
     const unsubHolidays = onSnapshot(collection(db, 'holidays'), (snapshot) => {
+      if (snapshot.metadata.hasPendingWrites) return;
       if (isSyncingFromRemote.current) return;
 
       const remoteHolidays: Holiday[] = [];
@@ -219,7 +238,8 @@ export function useFirestoreSync({
         remoteHolidays.push(doc.data() as Holiday);
       });
 
-      if (JSON.stringify(holidays) !== JSON.stringify(remoteHolidays)) {
+      const currentHolidays = latestHolidaysRef.current;
+      if (JSON.stringify(currentHolidays) !== JSON.stringify(remoteHolidays)) {
         console.log('Remote holidays changed. Syncing to local...');
         isSyncingFromRemote.current = true;
         setHolidays(remoteHolidays);
@@ -232,7 +252,7 @@ export function useFirestoreSync({
       unsubTodos();
       unsubHolidays();
     };
-  }, [todos, holidays, setTodos, setHolidays]);
+  }, [isSyncing, setTodos, setHolidays]);
 
   // 3. Local-to-Firestore Push Effect
   useEffect(() => {
