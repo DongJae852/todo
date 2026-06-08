@@ -6,14 +6,31 @@ export function useNotification(todos: Todo[]) {
   const [permission, setPermission] = useState<NotificationPermission>(
     typeof Notification !== 'undefined' ? Notification.permission : 'default'
   );
-  const notifiedRef = useRef<Set<string>>(new Set());
+  const notifiedKeysRef = useRef<Set<string>>(new Set());
 
-  // 앱 시작 시 권한 요청
+  // 앱 시작 시 권한 요청 및 로컬 스토리지에서 오늘 알림 기록 로드
   useEffect(() => {
     if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
       Notification.requestPermission().then(perm => {
         setPermission(perm);
       });
+    }
+
+    // 로컬 스토리지에서 오늘 이미 알림을 보낸 키들을 복구
+    try {
+      const saved = localStorage.getItem('dongjae-todo-notified-keys');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          const today = dayjs().format('YYYY-MM-DD');
+          // 오늘 날짜의 알림 키만 남기고 필터링 (로컬 스토리지 누적 방지)
+          const validKeys = parsed.filter(key => key.endsWith(`-${today}`));
+          notifiedKeysRef.current = new Set(validKeys);
+          localStorage.setItem('dongjae-todo-notified-keys', JSON.stringify(validKeys));
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load notified keys:', e);
     }
   }, []);
 
@@ -34,6 +51,18 @@ export function useNotification(todos: Todo[]) {
     });
   }, []);
 
+  const recordNotification = useCallback((key: string) => {
+    notifiedKeysRef.current.add(key);
+    try {
+      localStorage.setItem(
+        'dongjae-todo-notified-keys', 
+        JSON.stringify(Array.from(notifiedKeysRef.current))
+      );
+    } catch (e) {
+      console.error('Failed to save notified keys:', e);
+    }
+  }, []);
+
   const sendTestNotification = useCallback(() => {
     sendNotification(
       '🔔 동재 Todo 웹 알림 테스트',
@@ -47,13 +76,6 @@ export function useNotification(todos: Todo[]) {
 
     const checkDueTodos = () => {
       const today = dayjs().format('YYYY-MM-DD');
-      const todayKey = `notified-${today}`;
-
-      // 하루가 바뀌면 알림 기록 초기화
-      if (!notifiedRef.current.has(todayKey)) {
-        notifiedRef.current.clear();
-        notifiedRef.current.add(todayKey);
-      }
 
       todos.forEach(todo => {
         if (todo.completed) return;
@@ -61,20 +83,16 @@ export function useNotification(todos: Todo[]) {
         const dueDate = dayjs(todo.dueDate).format('YYYY-MM-DD');
         const notifKey = `${todo.id}-${today}`;
 
-        if (notifiedRef.current.has(notifKey)) return;
+        // 이미 오늘 알림을 띄운 투두라면 스킵
+        if (notifiedKeysRef.current.has(notifKey)) return;
 
+        // 오늘 마감일인 것만 알림 발송 (지난 일정은 알림 스킵)
         if (dueDate === today) {
           sendNotification(
             '⏰ 오늘 마감!',
             `"${todo.title}" 마감일이 오늘입니다!`
           );
-          notifiedRef.current.add(notifKey);
-        } else if (dueDate < today) {
-          sendNotification(
-            '🚨 기한 초과!',
-            `"${todo.title}" 마감일이 지났습니다!`
-          );
-          notifiedRef.current.add(notifKey);
+          recordNotification(notifKey);
         }
       });
     };
@@ -83,7 +101,7 @@ export function useNotification(todos: Todo[]) {
     const interval = setInterval(checkDueTodos, 60000); // 1분 간격
 
     return () => clearInterval(interval);
-  }, [todos, permission, sendNotification]);
+  }, [todos, permission, sendNotification, recordNotification]);
 
   return {
     permission,
