@@ -162,7 +162,15 @@ const TodoCalendar: React.FC<TodoCalendarProps> = ({
 
     // 기간 과제(배너형)와 일반 과제(점형)를 분리하여 배너형을 무조건 맨 위로 고정!
     const periodTodos = dayTodos.filter(t => t.isPeriod);
-    const dotTodos = dayTodos.filter(t => !t.isPeriod);
+    // 우측 패널에서 드래그로 정한 순서(sortOrder)를 달력 점 목록에도 동일하게 반영
+    const dotTodos = dayTodos
+      .filter(t => !t.isPeriod)
+      .sort((a, b) => {
+        const orderA = a.sortOrder ?? 99999;
+        const orderB = b.sortOrder ?? 99999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.createdAt.localeCompare(b.createdAt);
+      });
 
     return (
       <div className={`calendar-cell-content ${offDay ? 'off-day-cell' : ''}`}>

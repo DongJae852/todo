@@ -15,7 +15,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // 오프라인 데이터 지속성을 포함한 Firestore 초기화 (다중 탭 지원)
+// ignoreUndefinedProperties: undefined 필드가 있어도 setDoc이 거부되지 않고 해당 필드만 생략하여 저장
 const db = initializeFirestore(app, {
+  ignoreUndefinedProperties: true,
   localCache: persistentLocalCache({
     tabManager: persistentMultipleTabManager()
   })
