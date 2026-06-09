@@ -9,7 +9,8 @@ import {
   writeBatch, 
   onSnapshot 
 } from 'firebase/firestore';
-import type { Todo, Holiday, CourseTask } from '../types/todo';
+import type { Todo, Holiday, CourseTask, RecurringGroupDoc } from '../types/todo';
+import { materializeAll, deriveGroups } from '../utils/recurringEngine';
 
 // Firestore는 undefined 값을 허용하지 않으므로, 문서 저장 전에 undefined 필드를 모두 제거
 function sanitizeForFirestore(obj: any): any {
@@ -136,9 +137,33 @@ export function useFirestoreSync({
   const prevCompletedTasksRef = useRef<Record<string, boolean>>({});
   const prevExcludedTasksRef = useRef<Record<string, boolean>>({});
   const prevRecurringGroupOrderRef = useRef<Record<string, number>>({});
+  // 반복 그룹 문서(groupId -> 직렬화 JSON)로 변경 감지
+  const prevRecurringGroupsRef = useRef<Map<string, string>>(new Map());
 
   // Debounce timer for push effect
   const pushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const isRecurringInstance = (t: Todo) => !!(t.isRecurring && t.recurringGroupId);
+
+  // 반복 그룹 문서들을 Firestore에 기록하고, prev 맵을 갱신 (변경된 것만 기록, 사라진 그룹은 삭제)
+  const writeRecurringGroups = useCallback(async (groups: RecurringGroupDoc[]) => {
+    const prevMap = prevRecurringGroupsRef.current;
+    const nextMap = new Map<string, string>();
+    for (const g of groups) {
+      const json = JSON.stringify(g);
+      nextMap.set(g.groupId, json);
+      if (prevMap.get(g.groupId) !== json) {
+        await setDoc(doc(db, 'recurringGroups', g.groupId), sanitizeForFirestore(g));
+      }
+    }
+    // 사라진 그룹 삭제
+    for (const groupId of prevMap.keys()) {
+      if (!nextMap.has(groupId)) {
+        await deleteDoc(doc(db, 'recurringGroups', groupId));
+      }
+    }
+    prevRecurringGroupsRef.current = nextMap;
+  }, []);
 
   // Helper function to upload in batches (max 500 docs per batch)
   const uploadInBatches = useCallback(async (collectionName: string, items: any[]) => {
@@ -166,13 +191,29 @@ export function useFirestoreSync({
         const todosSnapshot = await getDocs(collection(db, 'todos'));
         const hasRemoteTodos = !todosSnapshot.empty;
 
-        if (!hasRemoteTodos) {
+        const groupsSnapshotInit = await getDocs(collection(db, 'recurringGroups'));
+        const hasRemoteData = hasRemoteTodos || !groupsSnapshotInit.empty;
+
+        if (!hasRemoteData) {
           console.log('Firestore is empty. Uploading local data to Firestore...');
-          
-          if (todos.length > 0) {
-            await uploadInBatches('todos', todos);
+
+          const holidayDates = holidays.map(h => h.date);
+          const singles = todos.filter(t => !isRecurringInstance(t));
+          const recurring = todos.filter(isRecurringInstance);
+
+          if (singles.length > 0) {
+            await uploadInBatches('todos', singles);
           }
-          
+
+          // 반복은 그룹 문서로 저장
+          const groups = deriveGroups(recurring, holidayDates);
+          const initMap = new Map<string, string>();
+          for (const g of groups) {
+            await setDoc(doc(db, 'recurringGroups', g.groupId), sanitizeForFirestore(g));
+            initMap.set(g.groupId, JSON.stringify(g));
+          }
+          prevRecurringGroupsRef.current = initMap;
+
           if (holidays.length > 0) {
             const holidayBatch = writeBatch(db);
             holidays.forEach(h => {
@@ -209,17 +250,46 @@ export function useFirestoreSync({
           console.log('Initial data upload to Firestore completed successfully!');
         } else {
           console.log('Firestore has data. Downloading to local state...');
-          
-          const remoteTodos: Todo[] = [];
-          todosSnapshot.forEach(d => {
-            remoteTodos.push(d.data() as Todo);
-          });
 
           const holidaysSnapshot = await getDocs(collection(db, 'holidays'));
           const remoteHolidays: Holiday[] = [];
           holidaysSnapshot.forEach(d => {
             remoteHolidays.push(d.data() as Holiday);
           });
+          const holidayDates = remoteHolidays.map(h => h.date);
+
+          // todos 컬렉션: 단일(비반복)만 사용. 남아있는 레거시 반복 인스턴스는 그룹이 있으면 무시.
+          const remoteSingles: Todo[] = [];
+          const legacyRecurring: Todo[] = [];
+          todosSnapshot.forEach(d => {
+            const t = d.data() as Todo;
+            if (t.isRecurring && t.recurringGroupId) legacyRecurring.push(t);
+            else remoteSingles.push(t);
+          });
+
+          // recurringGroups 컬렉션 → 펼치기. 없으면 레거시 인스턴스로 폴백(마이그레이션 전 안전장치).
+          const remoteGroups: RecurringGroupDoc[] = [];
+          groupsSnapshotInit.forEach(d => {
+            remoteGroups.push(d.data() as RecurringGroupDoc);
+          });
+
+          // 혼합 상태 안전 처리: recurringGroups에 있는 그룹은 materialize,
+          // 아직 그룹 문서가 없는(미마이그레이션) 그룹은 레거시 인스턴스를 그대로 사용.
+          const migratedIds = new Set(remoteGroups.map(g => g.groupId));
+          const legacyNotMigrated = legacyRecurring.filter(t => !migratedIds.has(t.recurringGroupId!));
+          const remoteRecurring: Todo[] = [
+            ...materializeAll(remoteGroups, holidayDates),
+            ...legacyNotMigrated,
+          ];
+
+          const groupsMap = new Map<string, string>();
+          for (const g of remoteGroups) groupsMap.set(g.groupId, JSON.stringify(g));
+          for (const g of deriveGroups(legacyNotMigrated, holidayDates)) {
+            if (!groupsMap.has(g.groupId)) groupsMap.set(g.groupId, JSON.stringify(g));
+          }
+          prevRecurringGroupsRef.current = groupsMap;
+
+          const remoteTodos: Todo[] = [...remoteSingles, ...remoteRecurring];
 
           const courseTasksSnapshot = await getDocs(collection(db, 'courseTasks'));
           const remoteCourseTasks: CourseTask[] = [];
@@ -300,37 +370,34 @@ export function useFirestoreSync({
       if (pushInFlightCount.current > 0) return;
       if (isSyncingFromRemote.current) return;
       
-      const remoteTodos: Todo[] = [];
+      // todos 컬렉션은 단일(비반복) 일정만 보유. 반복은 그룹 문서(recurringGroups)에서 관리하므로
+      // 여기선 단일만 비교하고, 로컬의 반복 인스턴스는 그대로 보존하여 병합한다.
+      const remoteSingles: Todo[] = [];
       snapshot.forEach(d => {
-        remoteTodos.push(d.data() as Todo);
+        const t = d.data() as Todo;
+        if (!(t.isRecurring && t.recurringGroupId)) remoteSingles.push(t);
       });
 
       const currentTodos = latestTodosRef.current;
-      
-      // 개수가 다르거나 내용이 다를 때만 업데이트
-      if (currentTodos.length !== remoteTodos.length) {
-        console.log(`Remote todos count changed (${currentTodos.length} -> ${remoteTodos.length}). Syncing...`);
-        isSyncingFromRemote.current = true;
-        setTodos(remoteTodos);
-        return;
-      }
-      
-      // ID 기반으로 정렬 후 비교
-      const sortedLocal = [...currentTodos].sort((a, b) => a.id.localeCompare(b.id));
-      const sortedRemote = [...remoteTodos].sort((a, b) => a.id.localeCompare(b.id));
-      
-      let isDifferent = false;
-      for (let i = 0; i < sortedLocal.length; i++) {
-        if (!isTodoSingleEqual(sortedLocal[i], sortedRemote[i])) {
-          isDifferent = true;
-          break;
+      const currentSingles = currentTodos.filter(t => !(t.isRecurring && t.recurringGroupId));
+      const currentRecurring = currentTodos.filter(t => t.isRecurring && t.recurringGroupId);
+
+      let isDifferent = currentSingles.length !== remoteSingles.length;
+      if (!isDifferent) {
+        const sortedLocal = [...currentSingles].sort((a, b) => a.id.localeCompare(b.id));
+        const sortedRemote = [...remoteSingles].sort((a, b) => a.id.localeCompare(b.id));
+        for (let i = 0; i < sortedLocal.length; i++) {
+          if (!isTodoSingleEqual(sortedLocal[i], sortedRemote[i])) {
+            isDifferent = true;
+            break;
+          }
         }
       }
-      
+
       if (isDifferent) {
-        console.log('Remote todos content changed. Syncing to local...');
+        console.log('Remote single todos changed. Merging with local recurring...');
         isSyncingFromRemote.current = true;
-        setTodos(remoteTodos);
+        setTodos([...remoteSingles, ...currentRecurring]);
       }
     });
 
@@ -403,59 +470,37 @@ export function useFirestoreSync({
         
         try {
           // === A. Sync Todos ===
+          // 단일(비반복) 일정만 todos 컬렉션에 개별 문서로 저장.
+          // 반복 일정은 그룹 규칙 문서(recurringGroups)로 압축 저장한다.
           const prevTodos = prevTodosRef.current;
           const currentTodos = todos;
-
-          // Ref를 즉시 현재 상태로 갱신 (이 이후 발생하는 효과에서 중복 push 방지)
           prevTodosRef.current = currentTodos;
 
-          const prevMap = new Map(prevTodos.map(t => [t.id, t]));
-          const currentMap = new Map(currentTodos.map(t => [t.id, t]));
+          const prevSingles = prevTodos.filter(t => !isRecurringInstance(t));
+          const currentSingles = currentTodos.filter(t => !isRecurringInstance(t));
 
-          // 변경/추가된 항목 수집
-          const todosToWrite: Todo[] = [];
-          for (const todo of currentTodos) {
+          const prevMap = new Map(prevSingles.map(t => [t.id, t]));
+          const currentMap = new Map(currentSingles.map(t => [t.id, t]));
+
+          // 단일 일정: 변경/추가 → 기록
+          for (const todo of currentSingles) {
             const prev = prevMap.get(todo.id);
             if (!prev || !isTodoSingleEqual(prev, todo)) {
-              todosToWrite.push(todo);
+              await setDoc(doc(db, 'todos', todo.id), sanitizeForFirestore(todo));
             }
           }
-
-          // 삭제된 항목 수집
-          const todosToDelete: Todo[] = [];
-          for (const todo of prevTodos) {
+          // 단일 일정: 삭제
+          for (const todo of prevSingles) {
             if (!currentMap.has(todo.id)) {
-              todosToDelete.push(todo);
+              await deleteDoc(doc(db, 'todos', todo.id));
             }
           }
 
-          // 배치로 쓰기 (500개씩)
-          if (todosToWrite.length > 0) {
-            const batchSize = 500;
-            for (let i = 0; i < todosToWrite.length; i += batchSize) {
-              const batch = writeBatch(db);
-              const chunk = todosToWrite.slice(i, i + batchSize);
-              chunk.forEach(todo => {
-                batch.set(doc(db, 'todos', todo.id), sanitizeForFirestore(todo));
-              });
-              await batch.commit();
-            }
-            console.log(`Synced ${todosToWrite.length} todo(s) to Firestore.`);
-          }
-
-          // 배치로 삭제
-          if (todosToDelete.length > 0) {
-            const batchSize = 500;
-            for (let i = 0; i < todosToDelete.length; i += batchSize) {
-              const batch = writeBatch(db);
-              const chunk = todosToDelete.slice(i, i + batchSize);
-              chunk.forEach(todo => {
-                batch.delete(doc(db, 'todos', todo.id));
-              });
-              await batch.commit();
-            }
-            console.log(`Deleted ${todosToDelete.length} todo(s) from Firestore.`);
-          }
+          // === A2. Sync Recurring Groups ===
+          const recurringTodos = currentTodos.filter(isRecurringInstance);
+          const holidayDates = holidays.map(h => h.date);
+          const groups = deriveGroups(recurringTodos, holidayDates);
+          await writeRecurringGroups(groups);
 
           // === B. Sync Holidays ===
           const prevHolidays = prevHolidaysRef.current;

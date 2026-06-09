@@ -52,6 +52,40 @@ export interface TodoWithPriority extends Todo {
   priorityRank: number; // 1=highest, 4=lowest
 }
 
+// ── 반복 일정 가상화 ────────────────────────────────────────────────
+// 반복 일정을 인스턴스마다 저장하지 않고 "그룹 규칙 1개 + 개별 상태(override)"로 저장한다.
+// 날짜별 인스턴스는 브라우저에서 규칙으로부터 생성(materialize)한다.
+
+// 규칙으로 생성되는 기본 인스턴스와 달라진 개별 날짜 상태만 저장 (sparse)
+export interface RecurringOverride {
+  completed?: boolean;
+  completedAt?: string;
+  dailyNote?: string;
+  checklist?: ChecklistItem[];
+  // 향후수정 등으로 규칙과 갈라진 개별 필드 (보통 비어있음)
+  title?: string;
+  description?: string;
+  difficulty?: number;
+}
+
+export interface RecurringGroupDoc {
+  groupId: string;
+  // 규칙(공통 베이스)
+  title: string;
+  description?: string;
+  difficulty: number;
+  recurringType?: RecurringType;
+  recurringDays?: number;
+  holidayBehavior?: 'next' | 'prev';
+  checklist?: ChecklistItem[]; // 체크리스트 구조 (완료상태 제외)
+  anchorDate: string;          // 생성 시작 기준일 (가장 이른 dueDate)
+  createdAt: string;
+  // 개별 상태 (sparse)
+  overrides?: Record<string, RecurringOverride>; // key = 자연 발생 날짜(YYYY-MM-DD)
+  exceptionDates?: string[];   // 단일 삭제/이동으로 제거된 자연 날짜
+  extraInstances?: Todo[];     // 자연 날짜가 아닌 위치의 인스턴스(연기 등)
+}
+
 export interface QuadrantInfo {
   key: Quadrant;
   label: string;
