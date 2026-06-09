@@ -16,6 +16,7 @@ interface TodoCalendarProps {
   courseTasks: CourseTask[];
   completedCourseTasks: Record<string, boolean>;
   excludedCourseTasks: Record<string, boolean>;
+  recurringGroupOrder: Record<string, number>;
 }
 
 const COURSE_COLORS = {
@@ -36,6 +37,7 @@ const TodoCalendar: React.FC<TodoCalendarProps> = ({
   courseTasks,
   completedCourseTasks,
   excludedCourseTasks,
+  recurringGroupOrder,
 }) => {
 
   // 날짜 스트링(YYYY-MM-DD)을 키로 하고, 그 날짜에 해당하는 투두 배열을 값으로 가지는 캐싱 맵 구축!
@@ -162,12 +164,19 @@ const TodoCalendar: React.FC<TodoCalendarProps> = ({
 
     // 기간 과제(배너형)와 일반 과제(점형)를 분리하여 배너형을 무조건 맨 위로 고정!
     const periodTodos = dayTodos.filter(t => t.isPeriod);
-    // 우측 패널에서 드래그로 정한 순서(sortOrder)를 달력 점 목록에도 동일하게 반영
+    // 우측 패널에서 드래그로 정한 순서를 달력 점 목록에도 동일하게 반영
+    // 반복 일정은 그룹 단위 순서(recurringGroupOrder), 단일 일정은 인스턴스 sortOrder 사용
+    const orderOf = (t: Todo): number => {
+      if (t.isRecurring && t.recurringGroupId) {
+        return recurringGroupOrder[t.recurringGroupId] ?? 99999;
+      }
+      return t.sortOrder ?? 99999;
+    };
     const dotTodos = dayTodos
       .filter(t => !t.isPeriod)
       .sort((a, b) => {
-        const orderA = a.sortOrder ?? 99999;
-        const orderB = b.sortOrder ?? 99999;
+        const orderA = orderOf(a);
+        const orderB = orderOf(b);
         if (orderA !== orderB) return orderA - orderB;
         return a.createdAt.localeCompare(b.createdAt);
       });

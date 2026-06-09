@@ -64,6 +64,16 @@ const App: React.FC = () => {
     }
   });
 
+  // 반복 일정의 그룹 단위 표시 순서 (groupId -> 순번). 인스턴스마다 sortOrder를 쓰지 않고 그룹 단위로만 저장한다.
+  const [recurringGroupOrder, setRecurringGroupOrder] = useState<Record<string, number>>(() => {
+    try {
+      const data = localStorage.getItem('dongjae-todo-recurring-group-order');
+      return data ? JSON.parse(data) : {};
+    } catch {
+      return {};
+    }
+  });
+
   // Firestore 실시간 동기화 훅 연결
   const { isSyncing, syncError } = useFirestoreSync({
     todos,
@@ -75,7 +85,9 @@ const App: React.FC = () => {
     completedCourseTasks,
     setCompletedCourseTasks,
     excludedCourseTasks,
-    setExcludedCourseTasks
+    setExcludedCourseTasks,
+    recurringGroupOrder,
+    setRecurringGroupOrder
   });
 
   // 로컬스토리지 동기화
@@ -90,6 +102,15 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('dongjae-todo-course-exclusions', JSON.stringify(excludedCourseTasks));
   }, [excludedCourseTasks]);
+
+  useEffect(() => {
+    localStorage.setItem('dongjae-todo-recurring-group-order', JSON.stringify(recurringGroupOrder));
+  }, [recurringGroupOrder]);
+
+  // 반복 일정 그룹 순서를 병합 갱신 (해당 날짜에 있던 그룹들만 새 순번으로 덮어씀)
+  const handleReorderRecurringGroups = useCallback((groupOrder: Record<string, number>) => {
+    setRecurringGroupOrder(prev => ({ ...prev, ...groupOrder }));
+  }, []);
 
   const handleOpenRecurringManager = useCallback((groupId?: string) => {
     setSelectedRecurringGroupId(groupId || null);
@@ -306,6 +327,7 @@ const App: React.FC = () => {
               courseTasks={courseTasks}
               completedCourseTasks={completedCourseTasks}
               excludedCourseTasks={excludedCourseTasks}
+              recurringGroupOrder={recurringGroupOrder}
             />
           </div>
 
@@ -321,6 +343,8 @@ const App: React.FC = () => {
               isOffDay={checkIsOffDay(selectedDate)}
               isHoliday={isHoliday(selectedDate.format('YYYY-MM-DD'))}
               onReorderTodos={reorderTodos}
+              recurringGroupOrder={recurringGroupOrder}
+              onReorderRecurringGroups={handleReorderRecurringGroups}
               onOpenRecurringManager={handleOpenRecurringManager}
               onPostponeTodo={(id) => postponeTodo(id, holidays.map(h => h.date))}
               onPrePostponeTodo={(id) => prePostponeTodo(id, holidays.map(h => h.date))}

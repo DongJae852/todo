@@ -40,6 +40,8 @@ interface UseFirestoreSyncProps {
   setCompletedCourseTasks: (completions: Record<string, boolean>) => void;
   excludedCourseTasks: Record<string, boolean>;
   setExcludedCourseTasks: (exclusions: Record<string, boolean>) => void;
+  recurringGroupOrder: Record<string, number>;
+  setRecurringGroupOrder: (order: Record<string, number>) => void;
 }
 
 // ==========================================
@@ -90,6 +92,17 @@ function areRecordsEqual(a: Record<string, boolean>, b: Record<string, boolean>)
   return true;
 }
 
+function areNumberRecordsEqual(a: Record<string, number>, b: Record<string, number>): boolean {
+  const keysA = Object.keys(a).sort();
+  const keysB = Object.keys(b).sort();
+  if (keysA.length !== keysB.length) return false;
+  for (let i = 0; i < keysA.length; i++) {
+    if (keysA[i] !== keysB[i]) return false;
+    if (a[keysA[i]] !== b[keysB[i]]) return false;
+  }
+  return true;
+}
+
 export function useFirestoreSync({
   todos,
   setTodos,
@@ -100,7 +113,9 @@ export function useFirestoreSync({
   completedCourseTasks,
   setCompletedCourseTasks,
   excludedCourseTasks,
-  setExcludedCourseTasks
+  setExcludedCourseTasks,
+  recurringGroupOrder,
+  setRecurringGroupOrder
 }: UseFirestoreSyncProps) {
   const [isSyncing, setIsSyncing] = useState(true);
   const [syncError, setSyncError] = useState<string | null>(null);
@@ -120,6 +135,7 @@ export function useFirestoreSync({
   const prevCourseTasksRef = useRef<CourseTask[]>([]);
   const prevCompletedTasksRef = useRef<Record<string, boolean>>({});
   const prevExcludedTasksRef = useRef<Record<string, boolean>>({});
+  const prevRecurringGroupOrderRef = useRef<Record<string, number>>({});
 
   // Debounce timer for push effect
   const pushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -179,7 +195,8 @@ export function useFirestoreSync({
 
           await setDoc(doc(db, 'appState', 'metadata'), sanitizeForFirestore({
             completedCourseTasks,
-            excludedCourseTasks
+            excludedCourseTasks,
+            recurringGroupOrder
           }));
 
           prevTodosRef.current = todos;
@@ -187,6 +204,7 @@ export function useFirestoreSync({
           prevCourseTasksRef.current = courseTasks;
           prevCompletedTasksRef.current = completedCourseTasks;
           prevExcludedTasksRef.current = excludedCourseTasks;
+          prevRecurringGroupOrderRef.current = recurringGroupOrder;
 
           console.log('Initial data upload to Firestore completed successfully!');
         } else {
@@ -212,12 +230,14 @@ export function useFirestoreSync({
           const metadataSnapshot = await getDocs(collection(db, 'appState'));
           let remoteCompleted: Record<string, boolean> = {};
           let remoteExcluded: Record<string, boolean> = {};
-          
+          let remoteGroupOrder: Record<string, number> = {};
+
           metadataSnapshot.forEach(d => {
             if (d.id === 'metadata') {
               const data = d.data();
               remoteCompleted = data.completedCourseTasks || {};
               remoteExcluded = data.excludedCourseTasks || {};
+              remoteGroupOrder = data.recurringGroupOrder || {};
             }
           });
 
@@ -228,12 +248,14 @@ export function useFirestoreSync({
           setCourseTasks(remoteCourseTasks);
           setCompletedCourseTasks(remoteCompleted);
           setExcludedCourseTasks(remoteExcluded);
+          setRecurringGroupOrder(remoteGroupOrder);
 
           prevTodosRef.current = remoteTodos;
           prevHolidaysRef.current = remoteHolidays;
           prevCourseTasksRef.current = remoteCourseTasks;
           prevCompletedTasksRef.current = remoteCompleted;
           prevExcludedTasksRef.current = remoteExcluded;
+          prevRecurringGroupOrderRef.current = remoteGroupOrder;
           
           console.log('Initial data download from Firestore completed successfully!');
         }
@@ -249,6 +271,7 @@ export function useFirestoreSync({
         prevCourseTasksRef.current = courseTasks;
         prevCompletedTasksRef.current = completedCourseTasks;
         prevExcludedTasksRef.current = excludedCourseTasks;
+        prevRecurringGroupOrderRef.current = recurringGroupOrder;
         isInitialSyncDone.current = true;
         setIsSyncing(false);
       }
@@ -363,6 +386,7 @@ export function useFirestoreSync({
       prevCourseTasksRef.current = courseTasks;
       prevCompletedTasksRef.current = completedCourseTasks;
       prevExcludedTasksRef.current = excludedCourseTasks;
+      prevRecurringGroupOrderRef.current = recurringGroupOrder;
       return;
     }
 
@@ -479,16 +503,21 @@ export function useFirestoreSync({
           const prevComp = prevCompletedTasksRef.current;
           const prevExcl = prevExcludedTasksRef.current;
 
+          const prevGroupOrder = prevRecurringGroupOrderRef.current;
+
           const compChanged = !areRecordsEqual(prevComp, completedCourseTasks);
           const exclChanged = !areRecordsEqual(prevExcl, excludedCourseTasks);
+          const groupOrderChanged = !areNumberRecordsEqual(prevGroupOrder, recurringGroupOrder);
 
-          if (compChanged || exclChanged) {
+          if (compChanged || exclChanged || groupOrderChanged) {
             prevCompletedTasksRef.current = completedCourseTasks;
             prevExcludedTasksRef.current = excludedCourseTasks;
+            prevRecurringGroupOrderRef.current = recurringGroupOrder;
 
             await setDoc(doc(db, 'appState', 'metadata'), sanitizeForFirestore({
               completedCourseTasks,
-              excludedCourseTasks
+              excludedCourseTasks,
+              recurringGroupOrder
             }));
             console.log('Synced course metadata to Firestore.');
           }
@@ -510,7 +539,7 @@ export function useFirestoreSync({
         clearTimeout(pushTimerRef.current);
       }
     };
-  }, [todos, holidays, courseTasks, completedCourseTasks, excludedCourseTasks]);
+  }, [todos, holidays, courseTasks, completedCourseTasks, excludedCourseTasks, recurringGroupOrder]);
 
   return { isSyncing, syncError };
 }

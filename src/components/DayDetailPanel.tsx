@@ -21,6 +21,8 @@ interface DayDetailPanelProps {
   isOffDay: boolean;
   isHoliday: boolean;
   onReorderTodos: (orderedIds: string[]) => void;
+  recurringGroupOrder: Record<string, number>;
+  onReorderRecurringGroups: (groupOrder: Record<string, number>) => void;
   onOpenRecurringManager?: (groupId: string) => void;
   onPostponeTodo?: (id: string) => void;
   onPrePostponeTodo?: (id: string) => void;
@@ -49,6 +51,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   isOffDay,
   isHoliday,
   onReorderTodos,
+  recurringGroupOrder,
+  onReorderRecurringGroups,
   onOpenRecurringManager,
   onPostponeTodo,
   onPrePostponeTodo,
@@ -143,9 +147,13 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
     const recB = b.isRecurring && b.recurringType ? (recurringOrder[b.recurringType] ?? 5) : 5;
     if (recA !== recB) return recA - recB;
 
-    // 2순위: 동일 주기 안에서만 sortOrder가 있는 일정을 우선 정렬
-    const orderA = a.sortOrder ?? 99999;
-    const orderB = b.sortOrder ?? 99999;
+    // 2순위: 표시 순서 (반복은 그룹 단위 recurringGroupOrder, 단일은 인스턴스 sortOrder)
+    const orderOf = (t: TodoWithPriority) =>
+      t.isRecurring && t.recurringGroupId
+        ? (recurringGroupOrder[t.recurringGroupId] ?? 99999)
+        : (t.sortOrder ?? 99999);
+    const orderA = orderOf(a);
+    const orderB = orderOf(b);
     if (orderA !== orderB) return orderA - orderB;
 
     // 3순위: priorityRank (우선순위 사분면 랭크) 기준
@@ -326,7 +334,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
       else if (draggedCategory === 'monthly') newMonthly = dragList;
 
       // 마우스를 뗐을 때(드래그 종료) 최종 순서 영구 저장 동기화!
-      const orderedIds = [
+      const orderedList = [
         ...projectTodos,
         ...newToday,
         ...newCustom,
@@ -334,10 +342,22 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
         ...newWeekly,
         ...newMonthly,
         ...completedTodos
-      ]
-        .filter(t => !t.isCourseTask)
-        .map(t => t.id);
-      onReorderTodos(orderedIds);
+      ].filter(t => !t.isCourseTask);
+
+      // 단일(비반복) 일정은 인스턴스 sortOrder로 저장
+      onReorderTodos(orderedList.map(t => t.id));
+
+      // 반복 일정은 그룹 단위 순번으로 저장 (수천 개 인스턴스 재기록 방지)
+      const groupOrder: Record<string, number> = {};
+      let groupIndex = 0;
+      for (const t of orderedList) {
+        if (t.isRecurring && t.recurringGroupId && groupOrder[t.recurringGroupId] === undefined) {
+          groupOrder[t.recurringGroupId] = groupIndex++;
+        }
+      }
+      if (Object.keys(groupOrder).length > 0) {
+        onReorderRecurringGroups(groupOrder);
+      }
     }
     setDraggedIndex(null);
     setDraggedCategory(null);

@@ -127,30 +127,16 @@ function todoReducer(state: Todo[], action: Action): Todo[] {
     }
     case 'REORDER_TODOS': {
       const { orderedIds } = action.payload;
-      const idToTodo = new Map<string, Todo>();
-      state.forEach(t => idToTodo.set(t.id, t));
-
-      const groupIdToSortOrder = new Map<string, number>();
       const idToOrder = new Map<string, number>();
-      
-      orderedIds.forEach((id, index) => {
-        idToOrder.set(id, index);
-        const todo = idToTodo.get(id);
-        if (todo && todo.isRecurring && todo.recurringGroupId) {
-          groupIdToSortOrder.set(todo.recurringGroupId, index);
-        }
-      });
+      orderedIds.forEach((id, index) => idToOrder.set(id, index));
 
+      // 반복 일정(수천 개 인스턴스)은 그룹 단위 순서(recurringGroupOrder)로 따로 관리하므로
+      // 여기서는 단일(비반복) 일정의 sortOrder만 갱신한다. (반복 인스턴스 전체 재기록 방지)
       return state.map(todo => {
-        const directIndex = idToOrder.get(todo.id);
-        if (directIndex !== undefined) {
-          return { ...todo, sortOrder: directIndex };
-        }
-        if (todo.isRecurring && todo.recurringGroupId) {
-          const groupIndex = groupIdToSortOrder.get(todo.recurringGroupId);
-          if (groupIndex !== undefined) {
-            return { ...todo, sortOrder: groupIndex };
-          }
+        if (todo.isRecurring && todo.recurringGroupId) return todo;
+        const order = idToOrder.get(todo.id);
+        if (order !== undefined && todo.sortOrder !== order) {
+          return { ...todo, sortOrder: order };
         }
         return todo;
       });
