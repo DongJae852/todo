@@ -328,6 +328,35 @@ export function useFirestoreSync({
           prevRecurringGroupOrderRef.current = remoteGroupOrder;
           
           console.log('Initial data download from Firestore completed successfully!');
+
+          // 일회성 마이그레이션: todos 컬렉션에 남아있는 레거시 반복 인스턴스 문서를
+          // 그룹 문서로 완전히 옮긴 뒤 삭제하여 매 로드 읽기량을 대폭 줄인다.
+          // (이미 메모리에 읽은 데이터를 사용하므로 추가 읽기 없음. 데이터는 그룹 문서에 보존됨.)
+          if (legacyRecurring.length > 0) {
+            try {
+              console.log(`Migrating ${legacyRecurring.length} legacy recurring docs into group docs...`);
+              const allGroups = deriveGroups(remoteRecurring, holidayDates);
+              const migMap = new Map<string, string>();
+              for (const g of allGroups) {
+                await setDoc(doc(db, 'recurringGroups', g.groupId), sanitizeForFirestore(g));
+                migMap.set(g.groupId, JSON.stringify(g));
+              }
+              prevRecurringGroupsRef.current = migMap;
+
+              // 레거시 인스턴스 문서 삭제 (정확히 읽어들인 반복 인스턴스 id만 삭제)
+              const delBatchSize = 450;
+              for (let i = 0; i < legacyRecurring.length; i += delBatchSize) {
+                const batch = writeBatch(db);
+                legacyRecurring.slice(i, i + delBatchSize).forEach(t => {
+                  batch.delete(doc(db, 'todos', t.id));
+                });
+                await batch.commit();
+              }
+              console.log('Legacy recurring cleanup complete. Reads will drop on next load.');
+            } catch (e) {
+              console.error('Recurring migration cleanup failed (will retry next load):', e);
+            }
+          }
         }
 
         isInitialSyncDone.current = true;
