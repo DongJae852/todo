@@ -7,11 +7,21 @@ export function instanceId(groupId: string, date: string): string {
   return `${groupId}__${date}`;
 }
 
+// 자연 날짜 생성 결과 캐시 (그룹 규칙+휴일이 같으면 5년치 재생성 생략 → derive/materialize 가속)
+const naturalDatesCache = new Map<string, string[]>();
+
 // 규칙(그룹)으로부터 자연 발생 날짜 목록을 생성. recurring.ts의 generateRecurringInstances와 동일한 규칙.
 export function generateNaturalDates(
   group: Pick<RecurringGroupDoc, 'anchorDate' | 'recurringType' | 'recurringDays' | 'holidayBehavior'>,
   holidays: string[]
 ): string[] {
+  const cacheKey =
+    group.anchorDate + '|' + (group.recurringType || '') + '|' +
+    (group.recurringDays || '') + '|' + (group.holidayBehavior || '') + '|' +
+    holidays.slice().sort().join(',');
+  const cached = naturalDatesCache.get(cacheKey);
+  if (cached) return cached;
+
   const dates: string[] = [];
   const start = dayjs(group.anchorDate);
   const end = start.add(5, 'year');
@@ -48,6 +58,7 @@ export function generateNaturalDates(
     }
   }
 
+  naturalDatesCache.set(cacheKey, dates);
   return dates;
 }
 
