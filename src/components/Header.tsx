@@ -21,6 +21,8 @@ interface HeaderProps {
   onTestNotification: () => void;
   notificationPermission: NotificationPermission;
   onRequestPermission: () => void;
+  notificationsEnabled: boolean;
+  onToggleNotifications: () => void;
   onHolidayClick: () => void;
   holidayCount: number;
   onRecurringClick: () => void;
@@ -36,6 +38,8 @@ const Header: React.FC<HeaderProps> = ({
   onTestNotification,
   notificationPermission,
   onRequestPermission,
+  notificationsEnabled,
+  onToggleNotifications,
   onHolidayClick,
   holidayCount,
   onRecurringClick,
@@ -142,7 +146,18 @@ const Header: React.FC<HeaderProps> = ({
               🔄 반복 모니터링
             </Button>
           </Tooltip>
-          {notificationPermission !== 'granted' ? (
+          {!notificationsEnabled ? (
+            <Tooltip title="알림이 꺼져 있습니다. 클릭하면 켜집니다">
+              <Button
+                icon={<BellOutlined />}
+                onClick={onToggleNotifications}
+                className="header-btn"
+                style={{ color: 'var(--text-muted)', opacity: 0.7 }}
+              >
+                🔕 알림 꺼짐
+              </Button>
+            </Tooltip>
+          ) : notificationPermission !== 'granted' ? (
             <Button
               icon={<BellOutlined />}
               onClick={onRequestPermission}
@@ -151,15 +166,26 @@ const Header: React.FC<HeaderProps> = ({
               알림 허용
             </Button>
           ) : (
-            <Tooltip title="알림 테스트">
-              <Button
-                icon={<BellOutlined />}
-                onClick={onTestNotification}
-                className="header-btn"
-              >
-                🔔 테스트
-              </Button>
-            </Tooltip>
+            <Space size={4}>
+              <Tooltip title="알림 테스트">
+                <Button
+                  icon={<BellOutlined />}
+                  onClick={onTestNotification}
+                  className="header-btn"
+                >
+                  🔔 테스트
+                </Button>
+              </Tooltip>
+              <Tooltip title="알림 끄기">
+                <Button
+                  onClick={onToggleNotifications}
+                  className="header-btn"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  끄기
+                </Button>
+              </Tooltip>
+            </Space>
           )}
           <Button
             type="primary"

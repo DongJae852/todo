@@ -364,6 +364,60 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
     setDragList(null);
   };
 
+  // ── 터치(모바일) 드래그 순서변경 ──────────────────────────────
+  // 드래그 핸들(touch-action:none)에서 시작한 제스처만 드래그로 처리해 스크롤과 충돌하지 않음.
+  // elementFromPoint로 손가락 아래 카드를 찾아 실시간 재배치하고, 커밋은 handleDragEnd 재사용.
+  const handleTouchReorderStart = (index: number, category: string, currentList: TodoWithPriority[]) => {
+    const item = currentList[index];
+    if (item.isCourseTask) return;
+    setDraggedIndex(index);
+    setDraggedCategory(category);
+    setDragList([...currentList]);
+  };
+
+  const handleTouchReorderMove = (e: React.TouchEvent) => {
+    if (draggedIndex === null || draggedCategory === null || !dragList) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const card = el?.closest('[data-drag-cat]') as HTMLElement | null;
+    if (!card || card.dataset.dragCat !== draggedCategory) return;
+    const hoverIndex = Number(card.dataset.dragIdx);
+    if (Number.isNaN(hoverIndex) || hoverIndex === draggedIndex) return;
+
+    const newList = [...dragList];
+    const [moved] = newList.splice(draggedIndex, 1);
+    newList.splice(hoverIndex, 0, moved);
+    setDragList(newList);
+    setDraggedIndex(hoverIndex);
+  };
+
+  // 데스크탑(HTML5 드래그) + 모바일(터치) 공통 props 생성 헬퍼
+  const buildDragProps = (idx: number, category: string, list: TodoWithPriority[]): React.HTMLAttributes<HTMLDivElement> => {
+    const props: any = {
+      draggable: true,
+      onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, category, list),
+      onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, category),
+      onDragEnd: handleDragEnd,
+      'data-drag-cat': category,
+      'data-drag-idx': idx,
+      style: {
+        opacity: (draggedCategory === category && draggedIndex === idx) ? 0.3 : 1,
+        transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
+        cursor: 'grab',
+      },
+    };
+    return props;
+  };
+
+  // 모바일 드래그 핸들(⠿)에 붙는 터치 props
+  const buildHandleProps = (idx: number, category: string, list: TodoWithPriority[]): React.HTMLAttributes<HTMLDivElement> => ({
+    onTouchStart: () => handleTouchReorderStart(idx, category, list),
+    onTouchMove: handleTouchReorderMove,
+    onTouchEnd: handleDragEnd,
+    style: { touchAction: 'none' },
+  });
+
   return (
     <div className="day-detail-panel">
       <div className="day-detail-header" style={{ borderBottom: 'none', paddingBottom: '4px' }}>
@@ -532,17 +586,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
-                          dragProps={{
-                            draggable: true,
-                            onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, 'today', displayTodayTodos),
-                            onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, 'today'),
-                            onDragEnd: handleDragEnd,
-                            style: {
-                              opacity: (draggedCategory === 'today' && draggedIndex === idx) ? 0.3 : 1,
-                              transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                              cursor: 'grab'
-                            }
-                          }}
+                          dragProps={buildDragProps(idx, 'today', displayTodayTodos)}
+                          reorderHandleProps={buildHandleProps(idx, 'today', displayTodayTodos)}
                         />
                       ))}
                     </div>
@@ -571,17 +616,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
-                          dragProps={{
-                            draggable: true,
-                            onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, 'custom', displayCustomTodos),
-                            onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, 'custom'),
-                            onDragEnd: handleDragEnd,
-                            style: {
-                              opacity: (draggedCategory === 'custom' && draggedIndex === idx) ? 0.3 : 1,
-                              transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                              cursor: 'grab'
-                            }
-                          }}
+                          dragProps={buildDragProps(idx, 'custom', displayCustomTodos)}
+                          reorderHandleProps={buildHandleProps(idx, 'custom', displayCustomTodos)}
                         />
                       ))}
                     </div>
@@ -610,17 +646,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
-                          dragProps={{
-                            draggable: true,
-                            onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, 'daily', displayDailyTodos),
-                            onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, 'daily'),
-                            onDragEnd: handleDragEnd,
-                            style: {
-                              opacity: (draggedCategory === 'daily' && draggedIndex === idx) ? 0.3 : 1,
-                              transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                              cursor: 'grab'
-                            }
-                          }}
+                          dragProps={buildDragProps(idx, 'daily', displayDailyTodos)}
+                          reorderHandleProps={buildHandleProps(idx, 'daily', displayDailyTodos)}
                         />
                       ))}
                     </div>
@@ -649,17 +676,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
-                          dragProps={{
-                            draggable: true,
-                            onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, 'weekly', displayWeeklyTodos),
-                            onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, 'weekly'),
-                            onDragEnd: handleDragEnd,
-                            style: {
-                              opacity: (draggedCategory === 'weekly' && draggedIndex === idx) ? 0.3 : 1,
-                              transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                              cursor: 'grab'
-                            }
-                          }}
+                          dragProps={buildDragProps(idx, 'weekly', displayWeeklyTodos)}
+                          reorderHandleProps={buildHandleProps(idx, 'weekly', displayWeeklyTodos)}
                         />
                       ))}
                     </div>
@@ -688,17 +706,8 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
-                          dragProps={{
-                            draggable: true,
-                            onDragStart: (e: React.DragEvent) => handleDragStart(e, idx, 'monthly', displayMonthlyTodos),
-                            onDragOver: (e: React.DragEvent) => handleDragOver(e, idx, 'monthly'),
-                            onDragEnd: handleDragEnd,
-                            style: {
-                              opacity: (draggedCategory === 'monthly' && draggedIndex === idx) ? 0.3 : 1,
-                              transition: 'all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)',
-                              cursor: 'grab'
-                            }
-                          }}
+                          dragProps={buildDragProps(idx, 'monthly', displayMonthlyTodos)}
+                          reorderHandleProps={buildHandleProps(idx, 'monthly', displayMonthlyTodos)}
                         />
                       ))}
                     </div>

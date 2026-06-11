@@ -653,9 +653,36 @@
   font-weight: 700;
 }
 
+/* 순서변경 드래그 핸들 (모바일/태블릿에서만 노출) */
+.todo-drag-handle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  font-size: 15px;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  flex-shrink: 0;
+}
+.todo-drag-handle:active {
+  cursor: grabbing;
+  background: rgba(139, 92, 246, 0.2);
+}
+
 /* ===== Responsive ===== */
 /* 태블릿 이하: 달력(위) / 상세 패널(아래)로 세로 스택 */
 @media (max-width: 1024px) {
+  .todo-drag-handle {
+    display: flex;
+  }
+
   .main-content {
     flex-direction: column;
     min-height: unset;

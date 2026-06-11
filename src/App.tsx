@@ -24,7 +24,7 @@ dayjs.locale('ko');
 
 const App: React.FC = () => {
   const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo } = useTodos();
-  const { permission, requestPermission, sendTestNotification } = useNotification(todos);
+  const { permission, requestPermission, sendTestNotification, notificationsEnabled, toggleNotifications } = useNotification(todos);
   const { holidays, setHolidays, addHoliday, removeHoliday, isHoliday, getHolidayReason } = useHolidays();
 
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
@@ -306,6 +306,8 @@ const App: React.FC = () => {
           onTestNotification={sendTestNotification}
           notificationPermission={permission}
           onRequestPermission={requestPermission}
+          notificationsEnabled={notificationsEnabled}
+          onToggleNotifications={toggleNotifications}
           onHolidayClick={() => setHolidayModalOpen(true)}
           holidayCount={holidays.length}
           onRecurringClick={() => handleOpenRecurringManager()}

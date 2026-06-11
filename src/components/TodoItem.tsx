@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Checkbox, Tag, Typography, Tooltip, Popconfirm, Button, Progress, Space, Input, message } from 'antd';
-import { EditOutlined, DeleteOutlined, RedoOutlined, SyncOutlined, ForwardOutlined, BackwardOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, RedoOutlined, SyncOutlined, ForwardOutlined, BackwardOutlined, HolderOutlined } from '@ant-design/icons';
 import type { TodoWithPriority } from '../types/todo';
 import type { Todo } from '../types/todo';
 import dayjs from 'dayjs';
@@ -15,6 +15,7 @@ interface TodoItemProps {
   onUpdateDirectly: (todo: Todo, mode?: 'single' | 'future' | 'all', selectedDate?: string) => void;
   indexNumber?: number;
   dragProps?: React.HTMLAttributes<HTMLDivElement>;
+  reorderHandleProps?: React.HTMLAttributes<HTMLDivElement>;
   onOpenRecurringManager?: (groupId: string) => void;
   onPostponeTodo?: (id: string) => void;
   onPrePostponeTodo?: (id: string) => void;
@@ -43,6 +44,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onUpdateDirectly,
   indexNumber,
   dragProps,
+  reorderHandleProps,
   onOpenRecurringManager,
   onPostponeTodo,
   onPrePostponeTodo,
@@ -215,6 +217,15 @@ const TodoItem: React.FC<TodoItemProps> = ({
         </div>
 
         <div className="todo-item-right" style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
+          {reorderHandleProps && (
+            <div
+              className="todo-drag-handle"
+              {...reorderHandleProps}
+              aria-label="순서 변경 핸들"
+            >
+              <HolderOutlined />
+            </div>
+          )}
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
             {onPrePostponeTodo && !todo.completed && !todo.isCourseTask && (
               <Popconfirm
