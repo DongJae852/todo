@@ -653,6 +653,12 @@
   font-weight: 700;
 }
 
+/* 일정 찾기 모달: 검색 결과 행 hover */
+.search-result-row:hover {
+  background: rgba(139, 92, 246, 0.12) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
 /* 순서변경 드래그 핸들 (모바일/태블릿에서만 노출) */
 .todo-drag-handle {
   display: none;

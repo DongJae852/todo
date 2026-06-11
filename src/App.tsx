@@ -122,6 +122,13 @@ const App: React.FC = () => {
     setSelectedRecurringGroupId(null);
   }, []);
 
+  // 검색 결과/스케줄에서 특정 날짜로 점프 (모달 닫고 그 날짜 선택)
+  const handleJumpToDate = useCallback((dateStr: string) => {
+    setSelectedDate(dayjs(dateStr));
+    setRecurringModalOpen(false);
+    setSelectedRecurringGroupId(null);
+  }, []);
+
   const handleImportBackup = useCallback((
     importedTodos: Todo[], 
     importedHolidays: typeof holidays,
@@ -381,6 +388,7 @@ const App: React.FC = () => {
           onClose={handleCloseRecurringManager}
           todos={todos}
           selectedGroupId={selectedRecurringGroupId}
+          onJumpToDate={handleJumpToDate}
         />
 
         <BackupRestoreModal

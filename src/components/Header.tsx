@@ -10,6 +10,7 @@ import {
   SyncOutlined,
   DatabaseOutlined,
   SettingOutlined,
+  SearchOutlined,
 } from '@ant-design/icons';
 import type { Todo } from '../types/todo';
 
@@ -132,18 +133,18 @@ const Header: React.FC<HeaderProps> = ({
               🗓 휴일
             </Button>
           </Tooltip>
-          <Tooltip title="반복 일정 모니터링">
+          <Tooltip title="일정 찾기 & 모니터링 (이름으로 검색, 날짜로 이동)">
             <Button
-              icon={<SyncOutlined />}
+              icon={<SearchOutlined />}
               onClick={onRecurringClick}
               className="header-btn header-recurring-btn"
               style={{
-                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(8b, 92, 246, 0.15))',
+                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.15))',
                 border: '1px solid rgba(6, 182, 212, 0.3)',
                 color: '#22d3ee',
               }}
             >
-              🔄 반복 모니터링
+              🔍 일정 찾기
             </Button>
           </Tooltip>
           {!notificationsEnabled ? (
