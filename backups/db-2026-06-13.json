@@ -1,0 +1,2240 @@
+{
+  "appState": {
+    "metadata": {
+      "completedCourseTasks": {
+        "2026-06-04_d8265e90-510d-4a78-ba51-02ade34d0a0f": true,
+        "2026-06-02_7959d40f-a81e-43f4-900f-aeb610a248bf": true,
+        "2026-06-11_d8265e90-510d-4a78-ba51-02ade34d0a0f": true,
+        "2026-06-11_83db9130-8e58-4f9e-8dbf-2e7ef7c049df": true,
+        "2026-06-10_7959d40f-a81e-43f4-900f-aeb610a248bf": true,
+        "2026-06-04_83db9130-8e58-4f9e-8dbf-2e7ef7c049df": true
+      },
+      "excludedCourseTasks": {},
+      "recurringGroupOrder": {
+        "93847851-b699-4082-b347-3d571262f566": 1,
+        "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5": 2,
+        "e308f6ce-c833-4055-b190-102ae2f88fb8": 3,
+        "258a2e8a-c0ec-487f-a3e2-9ca712cdfb20": 0
+      }
+    }
+  },
+  "courseTasks": {
+    "7959d40f-a81e-43f4-900f-aeb610a248bf": {
+      "difficulty": 1,
+      "id": "7959d40f-a81e-43f4-900f-aeb610a248bf",
+      "title": "두산,경산 수량 전달",
+      "course": "B"
+    },
+    "83db9130-8e58-4f9e-8dbf-2e7ef7c049df": {
+      "difficulty": 1,
+      "id": "83db9130-8e58-4f9e-8dbf-2e7ef7c049df",
+      "title": "문자발송 (일별마감)",
+      "course": "C"
+    },
+    "d8265e90-510d-4a78-ba51-02ade34d0a0f": {
+      "difficulty": 1,
+      "id": "d8265e90-510d-4a78-ba51-02ade34d0a0f",
+      "title": "백업",
+      "course": "C"
+    }
+  },
+  "holidays": {
+    "2026-05-05": {
+      "date": "2026-05-05",
+      "reason": "어린이날"
+    },
+    "2026-05-25": {
+      "date": "2026-05-25",
+      "reason": "대체공휴일"
+    },
+    "2026-06-03": {
+      "date": "2026-06-03",
+      "reason": "전국지방선거"
+    },
+    "2026-07-17": {
+      "date": "2026-07-17",
+      "reason": "제헌절"
+    },
+    "2026-08-17": {
+      "date": "2026-08-17",
+      "reason": ""
+    },
+    "2026-09-24": {
+      "date": "2026-09-24",
+      "reason": ""
+    },
+    "2026-09-25": {
+      "date": "2026-09-25",
+      "reason": ""
+    },
+    "2026-10-05": {
+      "date": "2026-10-05",
+      "reason": ""
+    },
+    "2026-10-09": {
+      "date": "2026-10-09",
+      "reason": ""
+    },
+    "2026-12-25": {
+      "date": "2026-12-25",
+      "reason": ""
+    }
+  },
+  "recurringGroups": {
+    "167f21c8-c96b-4704-b0b8-343b8c5bdfd9": {
+      "description": "매주 수요일 직원팟배분",
+      "recurringType": "weekly",
+      "anchorDate": "2026-06-10",
+      "createdAt": "2026-06-10T00:42:46.911Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-10": {
+          "completed": true,
+          "dailyNote": "샤인퍼플 재고 1개 부족했음, 주말에 이사님이 들고가신거였고, 나 없을 때 보관함 안 열기로 하였음, 한번 더 발생하면 자물쇠 달기로함",
+          "completedAt": "2026-06-10T07:40:37.517Z"
+        }
+      },
+      "groupId": "167f21c8-c96b-4704-b0b8-343b8c5bdfd9",
+      "title": "직원팟배분",
+      "holidayBehavior": "next"
+    },
+    "17d48d96-fa2d-4d0b-bad8-a07b370f99ed": {
+      "description": "직전주 판매량 엑셀 파일에 업데이트",
+      "recurringType": "weekly",
+      "anchorDate": "2026-06-08",
+      "createdAt": "2026-05-29T06:08:16.389Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-08": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:23:38.297Z"
+        }
+      },
+      "groupId": "17d48d96-fa2d-4d0b-bad8-a07b370f99ed",
+      "title": "직영점 주별 판매량 업데이트",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 4,
+          "recurringType": "weekly",
+          "completed": false,
+          "description": "직전주 판매량 엑셀 파일에 업데이트",
+          "createdAt": "2026-06-10T00:42:46.918Z",
+          "id": "63bd04cb-4fa2-48b9-9de1-b8e192701fb8",
+          "dueDate": "2031-06-09",
+          "isPeriod": false,
+          "difficulty": 2,
+          "recurringGroupId": "17d48d96-fa2d-4d0b-bad8-a07b370f99ed",
+          "title": "직영점 주별 판매량 업데이트"
+        }
+      ]
+    },
+    "258a2e8a-c0ec-487f-a3e2-9ca712cdfb20": {
+      "anchorDate": "2026-06-09",
+      "recurringType": "daily",
+      "createdAt": "2026-06-09T07:44:15.800Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-09": {
+          "completed": true,
+          "completedAt": "2026-06-09T08:34:06.317Z",
+          "checklist": [
+            {
+              "text": "직영요청사항확인",
+              "completed": true,
+              "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+            },
+            {
+              "text": "제한품목확인",
+              "completed": true,
+              "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+            }
+          ]
+        },
+        "2026-06-11": {
+          "completed": true,
+          "completedAt": "2026-06-11T00:49:08.569Z",
+          "checklist": [
+            {
+              "text": "직영요청사항확인",
+              "completed": true,
+              "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+            },
+            {
+              "text": "제한품목확인",
+              "completed": true,
+              "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+            }
+          ]
+        },
+        "2026-06-10": {
+          "completed": true,
+          "completedAt": "2026-06-10T01:17:06.696Z",
+          "checklist": [
+            {
+              "text": "직영요청사항확인",
+              "completed": true,
+              "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+            },
+            {
+              "text": "제한품목확인",
+              "completed": true,
+              "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+            }
+          ]
+        },
+        "2026-06-12": {
+          "completed": true,
+          "completedAt": "2026-06-12T00:38:35.981Z",
+          "checklist": [
+            {
+              "text": "직영요청사항확인",
+              "completed": true,
+              "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+            },
+            {
+              "text": "제한품목확인",
+              "completed": true,
+              "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+            }
+          ]
+        }
+      },
+      "groupId": "258a2e8a-c0ec-487f-a3e2-9ca712cdfb20",
+      "title": "직영점 재고 짜기",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 1,
+          "createdAt": "2026-06-10T00:42:46.906Z",
+          "completed": false,
+          "recurringType": "daily",
+          "isPeriod": false,
+          "dueDate": "2031-06-10",
+          "id": "5498976e-c718-489f-bae1-7698c0cbf42c",
+          "difficulty": 2,
+          "recurringGroupId": "258a2e8a-c0ec-487f-a3e2-9ca712cdfb20",
+          "title": "직영점 재고 짜기",
+          "holidayBehavior": "next",
+          "checklist": [
+            {
+              "text": "직영요청사항확인",
+              "completed": false,
+              "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+            },
+            {
+              "text": "제한품목확인",
+              "completed": false,
+              "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+            }
+          ]
+        }
+      ],
+      "holidayBehavior": "next",
+      "checklist": [
+        {
+          "text": "직영요청사항확인",
+          "completed": false,
+          "id": "b5c75caa-91cd-45c8-a1ba-eb8438a5b1c7"
+        },
+        {
+          "text": "제한품목확인",
+          "completed": false,
+          "id": "0b20c12a-5fee-491a-8163-6ebd94743431"
+        }
+      ]
+    },
+    "41693d8b-4ef9-42eb-b433-85189949c8d3": {
+      "description": "매주 첫 근무일 매출마감",
+      "recurringType": "weekly",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-05-29T06:08:16.382Z",
+      "difficulty": 1,
+      "overrides": {
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T02:56:46.822Z"
+        },
+        "2026-06-08": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:23:36.889Z"
+        }
+      },
+      "groupId": "41693d8b-4ef9-42eb-b433-85189949c8d3",
+      "title": "매출마감",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "recurringType": "weekly",
+          "completed": false,
+          "description": "매주 첫 근무일 매출마감",
+          "createdAt": "2026-06-10T00:42:46.910Z",
+          "id": "deae199e-4423-4d30-a839-c6b7ed639a92",
+          "dueDate": "2031-06-02",
+          "difficulty": 1,
+          "isPeriod": false,
+          "recurringGroupId": "41693d8b-4ef9-42eb-b433-85189949c8d3",
+          "title": "매출마감"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "recurringType": "weekly",
+          "completed": false,
+          "description": "매주 첫 근무일 매출마감",
+          "createdAt": "2026-06-10T00:42:46.910Z",
+          "id": "3a3d93a0-c507-41dc-9948-5ac815be19cd",
+          "dueDate": "2031-06-09",
+          "difficulty": 1,
+          "isPeriod": false,
+          "recurringGroupId": "41693d8b-4ef9-42eb-b433-85189949c8d3",
+          "title": "매출마감"
+        }
+      ]
+    },
+    "4d4053c6-28aa-4c98-8dcd-2d1c6e7c9b57": {
+      "description": "이사님께 통관요청",
+      "recurringType": "weekly",
+      "anchorDate": "2026-06-22",
+      "createdAt": "2026-06-11T05:07:19.973Z",
+      "difficulty": 2,
+      "groupId": "4d4053c6-28aa-4c98-8dcd-2d1c6e7c9b57",
+      "title": "통관요청",
+      "holidayBehavior": "next"
+    },
+    "5432adfd-26c7-4a5e-87ce-56f93d6e8e52": {
+      "description": "최근 3개월 평균값에 맞춰서 재고웹 일평균판매량 업데이트 - 팟/하카B/호부스틱 등 카트리지 위주",
+      "recurringType": "monthly",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-05-29T06:08:16.387Z",
+      "difficulty": 1,
+      "overrides": {
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T07:07:58.786Z"
+        }
+      },
+      "groupId": "5432adfd-26c7-4a5e-87ce-56f93d6e8e52",
+      "title": "재고웹 일평균판매량 업데이트",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "description": "최근 3개월 평균값에 맞춰서 재고웹 일평균판매량 업데이트 - 팟/하카B/호부스틱 등 카트리지 위주",
+          "createdAt": "2026-06-10T00:42:46.911Z",
+          "completed": false,
+          "sortOrder": 7,
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-06-02",
+          "difficulty": 1,
+          "id": "544d48c8-97be-45fa-b5dc-4902ee7da207",
+          "recurringGroupId": "5432adfd-26c7-4a5e-87ce-56f93d6e8e52",
+          "title": "재고웹 일평균판매량 업데이트"
+        },
+        {
+          "isRecurring": true,
+          "description": "최근 3개월 평균값에 맞춰서 재고웹 일평균판매량 업데이트 - 팟/하카B/호부스틱 등 카트리지 위주",
+          "createdAt": "2026-06-10T00:42:46.911Z",
+          "completed": false,
+          "sortOrder": 7,
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-07-01",
+          "difficulty": 1,
+          "id": "f65c9152-094e-4d93-98dd-b347167a5465",
+          "recurringGroupId": "5432adfd-26c7-4a5e-87ce-56f93d6e8e52",
+          "title": "재고웹 일평균판매량 업데이트"
+        }
+      ]
+    },
+    "568a2953-a9cf-403e-8c99-39a4323d432c": {
+      "recurringDays": 21,
+      "recurringType": "custom",
+      "anchorDate": "2026-06-27",
+      "createdAt": "2026-06-12T09:18:55.114Z",
+      "exceptionDates": [
+        "2026-07-18"
+      ],
+      "difficulty": 1,
+      "groupId": "568a2953-a9cf-403e-8c99-39a4323d432c",
+      "title": "제주도 배송일",
+      "holidayBehavior": "keep"
+    },
+    "5b731952-d767-450e-beca-30f70ddf2882": {
+      "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+      "recurringType": "monthly",
+      "anchorDate": "2026-06-02",
+      "createdAt": "2026-05-29T06:08:16.388Z",
+      "exceptionDates": [
+        "2026-07-02",
+        "2026-09-02",
+        "2026-10-02",
+        "2026-12-02",
+        "2027-01-04",
+        "2027-02-02",
+        "2027-03-02",
+        "2027-04-02",
+        "2027-06-02",
+        "2027-07-02",
+        "2027-09-02",
+        "2027-10-04",
+        "2027-11-02",
+        "2027-12-02",
+        "2028-02-02",
+        "2028-03-02",
+        "2028-05-02",
+        "2028-06-02",
+        "2028-08-02",
+        "2028-09-04",
+        "2028-11-02",
+        "2028-12-04",
+        "2029-01-02",
+        "2029-02-02",
+        "2029-03-02",
+        "2029-05-02",
+        "2029-06-04",
+        "2029-08-02",
+        "2029-10-02",
+        "2029-11-02",
+        "2030-01-02",
+        "2030-02-04",
+        "2030-03-04",
+        "2030-04-02",
+        "2030-05-02",
+        "2030-07-02",
+        "2030-08-02",
+        "2030-10-02",
+        "2030-11-04",
+        "2031-01-02",
+        "2031-04-02",
+        "2031-05-02"
+      ],
+      "difficulty": 5,
+      "overrides": {
+        "2026-06-02": {
+          "completed": true,
+          "completedAt": "2026-06-09T01:20:42.529Z"
+        }
+      },
+      "groupId": "5b731952-d767-450e-beca-30f70ddf2882",
+      "title": "재고웹 월별 판매량 데이터 추가",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2026-07-01",
+          "difficulty": 5,
+          "id": "3a9788aa-3a1e-439f-8cb4-0248cbb108fc",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2026-09-01",
+          "difficulty": 5,
+          "id": "447a97f0-0127-477f-8dfc-6ad774c3a2aa",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2026-10-01",
+          "difficulty": 5,
+          "id": "38bfc335-6a92-42b8-912b-feed5cd0bb7b",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2026-12-01",
+          "difficulty": 5,
+          "id": "5a4791f9-5e13-4646-88a5-63b404046a46",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-01-01",
+          "difficulty": 5,
+          "id": "e0150575-1c4d-4b48-92ea-9ac1581d5d99",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-02-01",
+          "difficulty": 5,
+          "id": "b173ffa1-621d-4878-b3df-3ce86654e648",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-03-01",
+          "difficulty": 5,
+          "id": "eec78177-52df-42b5-bf0f-db7883fbc350",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-04-01",
+          "difficulty": 5,
+          "id": "72ea4c74-6371-4734-ac9e-3d9141a20b7e",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-06-01",
+          "difficulty": 5,
+          "id": "501bd4ca-4ed4-45bb-8b39-bcf3eb459e3b",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-07-01",
+          "difficulty": 5,
+          "id": "2d2ed6a6-3c07-4254-9971-d63eaf337adf",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-09-01",
+          "difficulty": 5,
+          "id": "927b44eb-1117-4b13-b99f-d5fcf02fd48c",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-10-01",
+          "difficulty": 5,
+          "id": "94ca25c2-681d-4a48-984a-474c5bcb78fa",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-11-01",
+          "difficulty": 5,
+          "id": "ed8a6016-15ea-4a05-90ce-4623d000e6fd",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2027-12-01",
+          "difficulty": 5,
+          "id": "f8e8d3cd-7054-4b35-9b5b-b7c5c69d0681",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-02-01",
+          "difficulty": 5,
+          "id": "be9703da-655b-4ad9-b7d6-0d44cb124ac0",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-03-01",
+          "difficulty": 5,
+          "id": "f1be5b88-f7e4-4a11-a7ce-3da9229f144d",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-05-01",
+          "difficulty": 5,
+          "id": "7249b293-8189-4e73-a1bf-c780b2e49475",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-06-01",
+          "difficulty": 5,
+          "id": "b5febef7-7395-4e31-888c-2eefe149a732",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-08-01",
+          "difficulty": 5,
+          "id": "366e56d7-7619-4d4c-9fe3-75ec0e766f0e",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-09-01",
+          "difficulty": 5,
+          "id": "8bef7155-3f30-4f4c-9fe1-b83b07374bd9",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-11-01",
+          "difficulty": 5,
+          "id": "87913e7c-49d4-460d-b2dc-d66a75ff892a",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2028-12-01",
+          "difficulty": 5,
+          "id": "dd551d05-f45c-490e-a104-adf450995fcb",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-01-01",
+          "difficulty": 5,
+          "id": "f4b57025-2734-4292-8def-11508c78e8e4",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-02-01",
+          "difficulty": 5,
+          "id": "3768515a-dafc-4b7c-93b0-b21cfb83e09f",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-03-01",
+          "difficulty": 5,
+          "id": "353798c1-b259-4f79-943c-079fa2bf7ba1",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-05-01",
+          "difficulty": 5,
+          "id": "2d69bc72-8f29-4cde-a7ab-a221e7ced4d9",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-06-01",
+          "difficulty": 5,
+          "id": "5ebe91fb-d4cd-4c59-ba5c-016e6b41f9a1",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-08-01",
+          "difficulty": 5,
+          "id": "f7464af3-b3b0-4d84-817a-51dbc9a85708",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-10-01",
+          "difficulty": 5,
+          "id": "980beb36-64be-4671-adfe-e36e1b35d6d5",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2029-11-01",
+          "difficulty": 5,
+          "id": "678b4f77-2eab-4954-a7db-264678c8fd8d",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-01-01",
+          "difficulty": 5,
+          "id": "3db5f4ec-3dcd-455b-bd35-ea1aad874978",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-02-01",
+          "difficulty": 5,
+          "id": "afafbb80-b84b-4275-ae9d-87e7cd19d054",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-03-01",
+          "difficulty": 5,
+          "id": "ef5a8409-3b87-4ff5-91b9-36bfef4a47cf",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-04-01",
+          "difficulty": 5,
+          "id": "10c900c4-b06d-4135-bb8b-b80bb864851e",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-05-01",
+          "difficulty": 5,
+          "id": "c9f2e6fb-cef7-4dc1-a65a-e1a2476ff02b",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-07-01",
+          "difficulty": 5,
+          "id": "3a16c1f3-706a-4359-b970-68007cad3f18",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-08-01",
+          "difficulty": 5,
+          "id": "d52ae7f0-dae2-4c11-be00-f07bd9b6e57c",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-10-01",
+          "difficulty": 5,
+          "id": "e336d0d1-f29b-4627-8aed-6da4c918f32b",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2030-11-01",
+          "difficulty": 5,
+          "id": "e69ea4bb-a577-4310-a777-1f4d7791117f",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-01-01",
+          "difficulty": 5,
+          "id": "8079a66e-9e7e-4e9f-8d21-d559f96c5c45",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-04-01",
+          "difficulty": 5,
+          "id": "bc41dc03-a12f-4f9e-8e18-09ea66646569",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.920Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-05-01",
+          "difficulty": 5,
+          "id": "aa6bf9ac-9807-4267-beca-0947dd6a0c5b",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 8,
+          "createdAt": "2026-06-10T00:42:46.921Z",
+          "completed": false,
+          "description": "판매점 출고량, 직영점 판매량 데이터 가공하여 재고웹에 업데이트",
+          "recurringType": "monthly",
+          "isPeriod": false,
+          "dueDate": "2031-07-01",
+          "difficulty": 5,
+          "id": "56dfa887-984d-4ebf-8fdc-ff6f16ffea74",
+          "recurringGroupId": "5b731952-d767-450e-beca-30f70ddf2882",
+          "title": "재고웹 월별 판매량 데이터 추가"
+        }
+      ]
+    },
+    "66cf0058-6212-4739-b065-f472071f31b5": {
+      "description": "",
+      "recurringType": "monthly",
+      "anchorDate": "2026-06-26",
+      "createdAt": "2026-06-12T08:32:56.415Z",
+      "difficulty": 2,
+      "groupId": "66cf0058-6212-4739-b065-f472071f31b5",
+      "title": "제주도 일정 짜기",
+      "holidayBehavior": "prev"
+    },
+    "76fb5e68-02e1-4aeb-995a-c6a14a59139e": {
+      "description": "제주도 물량짜기",
+      "recurringType": "custom",
+      "recurringDays": 21,
+      "anchorDate": "2026-06-02",
+      "createdAt": "2026-06-01T06:41:14.536Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-02": {
+          "completed": true,
+          "completedAt": "2026-06-09T01:20:04.562Z"
+        }
+      },
+      "groupId": "76fb5e68-02e1-4aeb-995a-c6a14a59139e",
+      "title": "제주도 물량",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "recurringDays": 21,
+          "createdAt": "2026-06-10T00:42:46.919Z",
+          "completed": false,
+          "recurringType": "custom",
+          "description": "제주도 물량짜기",
+          "isPeriod": false,
+          "dueDate": "2031-06-03",
+          "difficulty": 2,
+          "id": "442c72fa-80b3-48d4-9618-7427ba8160fe",
+          "recurringGroupId": "76fb5e68-02e1-4aeb-995a-c6a14a59139e",
+          "title": "제주도 물량"
+        }
+      ]
+    },
+    "7b0fad67-8ad9-441a-b6d7-87bfa0810fce": {
+      "description": "이사님께 통관요청",
+      "recurringType": "weekly",
+      "anchorDate": "2026-06-10",
+      "createdAt": "2026-06-10T00:42:46.842Z",
+      "exceptionDates": [
+        "2026-06-17",
+        "2026-06-24",
+        "2026-07-01",
+        "2026-07-08",
+        "2026-07-15",
+        "2026-07-22",
+        "2026-07-29",
+        "2026-08-05",
+        "2026-08-12",
+        "2026-08-19",
+        "2026-08-26",
+        "2026-09-02",
+        "2026-09-09",
+        "2026-09-16",
+        "2026-09-23",
+        "2026-09-30",
+        "2026-10-07",
+        "2026-10-14",
+        "2026-10-21",
+        "2026-10-28",
+        "2026-11-04",
+        "2026-11-11",
+        "2026-11-18",
+        "2026-11-25",
+        "2026-12-02",
+        "2026-12-09",
+        "2026-12-16",
+        "2026-12-23",
+        "2026-12-30",
+        "2027-01-06",
+        "2027-01-13",
+        "2027-01-20",
+        "2027-01-27",
+        "2027-02-03",
+        "2027-02-10",
+        "2027-02-17",
+        "2027-02-24",
+        "2027-03-03",
+        "2027-03-10",
+        "2027-03-17",
+        "2027-03-24",
+        "2027-03-31",
+        "2027-04-07",
+        "2027-04-14",
+        "2027-04-21",
+        "2027-04-28",
+        "2027-05-05",
+        "2027-05-12",
+        "2027-05-19",
+        "2027-05-26",
+        "2027-06-02",
+        "2027-06-09",
+        "2027-06-16",
+        "2027-06-23",
+        "2027-06-30",
+        "2027-07-07",
+        "2027-07-14",
+        "2027-07-21",
+        "2027-07-28",
+        "2027-08-04",
+        "2027-08-11",
+        "2027-08-18",
+        "2027-08-25",
+        "2027-09-01",
+        "2027-09-08",
+        "2027-09-15",
+        "2027-09-22",
+        "2027-09-29",
+        "2027-10-06",
+        "2027-10-13",
+        "2027-10-20",
+        "2027-10-27",
+        "2027-11-03",
+        "2027-11-10",
+        "2027-11-17",
+        "2027-11-24",
+        "2027-12-01",
+        "2027-12-08",
+        "2027-12-15",
+        "2027-12-22",
+        "2027-12-29",
+        "2028-01-05",
+        "2028-01-12",
+        "2028-01-19",
+        "2028-01-26",
+        "2028-02-02",
+        "2028-02-09",
+        "2028-02-16",
+        "2028-02-23",
+        "2028-03-01",
+        "2028-03-08",
+        "2028-03-15",
+        "2028-03-22",
+        "2028-03-29",
+        "2028-04-05",
+        "2028-04-12",
+        "2028-04-19",
+        "2028-04-26",
+        "2028-05-03",
+        "2028-05-10",
+        "2028-05-17",
+        "2028-05-24",
+        "2028-05-31",
+        "2028-06-07",
+        "2028-06-14",
+        "2028-06-21",
+        "2028-06-28",
+        "2028-07-05",
+        "2028-07-12",
+        "2028-07-19",
+        "2028-07-26",
+        "2028-08-02",
+        "2028-08-09",
+        "2028-08-16",
+        "2028-08-23",
+        "2028-08-30",
+        "2028-09-06",
+        "2028-09-13",
+        "2028-09-20",
+        "2028-09-27",
+        "2028-10-04",
+        "2028-10-11",
+        "2028-10-18",
+        "2028-10-25",
+        "2028-11-01",
+        "2028-11-08",
+        "2028-11-15",
+        "2028-11-22",
+        "2028-11-29",
+        "2028-12-06",
+        "2028-12-13",
+        "2028-12-20",
+        "2028-12-27",
+        "2029-01-03",
+        "2029-01-10",
+        "2029-01-17",
+        "2029-01-24",
+        "2029-01-31",
+        "2029-02-07",
+        "2029-02-14",
+        "2029-02-21",
+        "2029-02-28",
+        "2029-03-07",
+        "2029-03-14",
+        "2029-03-21",
+        "2029-03-28",
+        "2029-04-04",
+        "2029-04-11",
+        "2029-04-18",
+        "2029-04-25",
+        "2029-05-02",
+        "2029-05-09",
+        "2029-05-16",
+        "2029-05-23",
+        "2029-05-30",
+        "2029-06-06",
+        "2029-06-13",
+        "2029-06-20",
+        "2029-06-27",
+        "2029-07-04",
+        "2029-07-11",
+        "2029-07-18",
+        "2029-07-25",
+        "2029-08-01",
+        "2029-08-08",
+        "2029-08-15",
+        "2029-08-22",
+        "2029-08-29",
+        "2029-09-05",
+        "2029-09-12",
+        "2029-09-19",
+        "2029-09-26",
+        "2029-10-03",
+        "2029-10-10",
+        "2029-10-17",
+        "2029-10-24",
+        "2029-10-31",
+        "2029-11-07",
+        "2029-11-14",
+        "2029-11-21",
+        "2029-11-28",
+        "2029-12-05",
+        "2029-12-12",
+        "2029-12-19",
+        "2029-12-26",
+        "2030-01-02",
+        "2030-01-09",
+        "2030-01-16",
+        "2030-01-23",
+        "2030-01-30",
+        "2030-02-06",
+        "2030-02-13",
+        "2030-02-20",
+        "2030-02-27",
+        "2030-03-06",
+        "2030-03-13",
+        "2030-03-20",
+        "2030-03-27",
+        "2030-04-03",
+        "2030-04-10",
+        "2030-04-17",
+        "2030-04-24",
+        "2030-05-01",
+        "2030-05-08",
+        "2030-05-15",
+        "2030-05-22",
+        "2030-05-29",
+        "2030-06-05",
+        "2030-06-12",
+        "2030-06-19",
+        "2030-06-26",
+        "2030-07-03",
+        "2030-07-10",
+        "2030-07-17",
+        "2030-07-24",
+        "2030-07-31",
+        "2030-08-07",
+        "2030-08-14",
+        "2030-08-21",
+        "2030-08-28",
+        "2030-09-04",
+        "2030-09-11",
+        "2030-09-18",
+        "2030-09-25",
+        "2030-10-02",
+        "2030-10-09",
+        "2030-10-16",
+        "2030-10-23",
+        "2030-10-30",
+        "2030-11-06",
+        "2030-11-13",
+        "2030-11-20",
+        "2030-11-27",
+        "2030-12-04",
+        "2030-12-11",
+        "2030-12-18",
+        "2030-12-25",
+        "2031-01-01",
+        "2031-01-08",
+        "2031-01-15",
+        "2031-01-22",
+        "2031-01-29",
+        "2031-02-05",
+        "2031-02-12",
+        "2031-02-19",
+        "2031-02-26",
+        "2031-03-05",
+        "2031-03-12",
+        "2031-03-19",
+        "2031-03-26",
+        "2031-04-02",
+        "2031-04-09",
+        "2031-04-16",
+        "2031-04-23",
+        "2031-04-30",
+        "2031-05-07",
+        "2031-05-14",
+        "2031-05-21",
+        "2031-05-28",
+        "2031-06-04"
+      ],
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-10": {
+          "completed": true,
+          "completedAt": "2026-06-10T02:10:37.429Z"
+        }
+      },
+      "groupId": "7b0fad67-8ad9-441a-b6d7-87bfa0810fce",
+      "title": "통관요청"
+    },
+    "8baf9c67-2d41-4160-9570-f971a9ba3ed2": {
+      "description": "재고 확인 후 필요한 것 형민님께 전달하여 입고할 것",
+      "recurringType": "custom",
+      "recurringDays": 14,
+      "anchorDate": "2026-06-12",
+      "createdAt": "2026-06-10T07:45:08.962Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-12": {
+          "completed": true,
+          "dailyNote": "7/26소진이 제일 빨라서 다음번에 확인하면 되겠음",
+          "completedAt": "2026-06-12T00:53:02.913Z"
+        }
+      },
+      "groupId": "8baf9c67-2d41-4160-9570-f971a9ba3ed2",
+      "title": "면세점 재고 확인",
+      "holidayBehavior": "next"
+    },
+    "93847851-b699-4082-b347-3d571262f566": {
+      "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+      "recurringType": "daily",
+      "anchorDate": "2026-06-02",
+      "createdAt": "2026-06-09T07:45:49.908Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-09": {
+          "completed": true,
+          "completedAt": "2026-06-09T08:34:07.872Z"
+        },
+        "2026-06-02": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:01.087Z"
+        },
+        "2026-06-11": {
+          "completed": true,
+          "completedAt": "2026-06-11T01:11:57.617Z"
+        },
+        "2026-06-10": {
+          "completed": true,
+          "completedAt": "2026-06-10T07:40:00.645Z"
+        },
+        "2026-06-08": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:10.146Z"
+        },
+        "2026-06-04": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:04.944Z"
+        },
+        "2026-06-05": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:07.802Z"
+        },
+        "2026-06-12": {
+          "completed": true,
+          "completedAt": "2026-06-12T02:59:45.984Z"
+        }
+      },
+      "groupId": "93847851-b699-4082-b347-3d571262f566",
+      "title": "재고웹 소진일 & 도매몰 수량 확인",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 4,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "completed": false,
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "recurringType": "daily",
+          "id": "e3004d2d-c002-465b-b01b-b9ed26ad855d",
+          "dueDate": "2031-06-03",
+          "isPeriod": false,
+          "difficulty": 2,
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "holidayBehavior": "next",
+          "checklist": []
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 4,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "completed": false,
+          "recurringType": "daily",
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "isPeriod": false,
+          "dueDate": "2031-06-04",
+          "id": "bd6d92dd-3456-4085-80fe-4620b4c6f47b",
+          "difficulty": 2,
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "holidayBehavior": "next",
+          "checklist": []
+        },
+        {
+          "isRecurring": true,
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 4,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "difficulty": 2,
+          "dueDate": "2031-06-05",
+          "isPeriod": false,
+          "id": "804b841c-1578-4aaa-957b-28eb32cc21d1",
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "holidayBehavior": "next",
+          "checklist": []
+        },
+        {
+          "isRecurring": true,
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "recurringType": "daily",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "sortOrder": 4,
+          "isPeriod": false,
+          "dueDate": "2031-06-06",
+          "difficulty": 2,
+          "id": "28a93293-a08e-43e6-8de0-c43d4ec7a2cd",
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "holidayBehavior": "next",
+          "checklist": []
+        },
+        {
+          "isRecurring": true,
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 4,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "id": "adde0bbf-555a-4105-80a3-5ab3f712be48",
+          "dueDate": "2031-06-09",
+          "difficulty": 2,
+          "isPeriod": false,
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "holidayBehavior": "next",
+          "checklist": []
+        },
+        {
+          "isRecurring": true,
+          "description": "1. 재고웹 소진일 확인 (아마란스 동기화)\n2. 이사님께 보고\n3. 도매몰 품절나지 않게 수량 확인",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 4,
+          "createdAt": "2026-06-10T00:42:46.840Z",
+          "id": "0edbaa2b-eae3-4c3b-bf05-f7d31c7874f3",
+          "dueDate": "2031-06-10",
+          "difficulty": 2,
+          "isPeriod": false,
+          "title": "재고웹 소진일 & 도매몰 수량 확인",
+          "recurringGroupId": "93847851-b699-4082-b347-3d571262f566",
+          "holidayBehavior": "next",
+          "checklist": []
+        }
+      ],
+      "holidayBehavior": "next"
+    },
+    "9ab75370-7128-4113-90d6-468a651866fc": {
+      "description": "이사님께 전월 지역별 팟, 하카B, 호부스틱 출고 데이터 전달",
+      "recurringType": "monthly",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-05-29T06:08:16.386Z",
+      "difficulty": 2,
+      "overrides": {
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T02:57:06.347Z"
+        }
+      },
+      "groupId": "9ab75370-7128-4113-90d6-468a651866fc",
+      "title": "지역별 팟, 하카B, 호부스틱 출고 데이터 전달",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "description": "이사님께 전월 지역별 팟, 하카B, 호부스틱 출고 데이터 전달",
+          "createdAt": "2026-06-10T00:42:46.842Z",
+          "completed": false,
+          "sortOrder": 6,
+          "recurringType": "monthly",
+          "id": "e4af4c4c-bd62-4773-acc6-d56bbc457458",
+          "dueDate": "2031-06-02",
+          "difficulty": 2,
+          "isPeriod": false,
+          "recurringGroupId": "9ab75370-7128-4113-90d6-468a651866fc",
+          "title": "지역별 팟, 하카B, 호부스틱 출고 데이터 전달"
+        },
+        {
+          "isRecurring": true,
+          "description": "이사님께 전월 지역별 팟, 하카B, 호부스틱 출고 데이터 전달",
+          "createdAt": "2026-06-10T00:42:46.842Z",
+          "completed": false,
+          "sortOrder": 6,
+          "recurringType": "monthly",
+          "id": "3b1618b4-f17a-48a6-8d6c-be50ee0f43a5",
+          "dueDate": "2031-07-01",
+          "difficulty": 2,
+          "isPeriod": false,
+          "recurringGroupId": "9ab75370-7128-4113-90d6-468a651866fc",
+          "title": "지역별 팟, 하카B, 호부스틱 출고 데이터 전달"
+        }
+      ]
+    },
+    "9d684d71-54d5-4102-a5c9-57bb7ca7216a": {
+      "description": "이사님/실장님께 직원팟수령건 전달",
+      "recurringType": "monthly",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-05-29T06:08:16.384Z",
+      "difficulty": 1,
+      "overrides": {
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T02:57:04.591Z"
+        }
+      },
+      "groupId": "9d684d71-54d5-4102-a5c9-57bb7ca7216a",
+      "title": "직원팟수령 전달",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "description": "이사님/실장님께 직원팟수령건 전달",
+          "recurringType": "monthly",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.706Z",
+          "difficulty": 1,
+          "dueDate": "2031-06-02",
+          "id": "2c22da20-c0be-43cb-b188-3f6b769a0253",
+          "title": "직원팟수령 전달",
+          "recurringGroupId": "9d684d71-54d5-4102-a5c9-57bb7ca7216a"
+        },
+        {
+          "isRecurring": true,
+          "description": "이사님/실장님께 직원팟수령건 전달",
+          "recurringType": "monthly",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.706Z",
+          "difficulty": 1,
+          "dueDate": "2031-07-01",
+          "id": "30e45d20-7a0d-405b-98d2-42fb76a391f2",
+          "title": "직원팟수령 전달",
+          "recurringGroupId": "9d684d71-54d5-4102-a5c9-57bb7ca7216a"
+        }
+      ]
+    },
+    "9fb9b384-85f9-40dc-9871-68e5218ccbfc": {
+      "anchorDate": "2026-06-22",
+      "recurringType": "monthly",
+      "groupId": "9fb9b384-85f9-40dc-9871-68e5218ccbfc",
+      "title": "물류에 필요한 팟요청",
+      "createdAt": "2026-06-12T08:10:43.498Z",
+      "holidayBehavior": "next",
+      "difficulty": 2
+    },
+    "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5": {
+      "description": "판매점 일별주문마감",
+      "recurringType": "daily",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-06-01T09:24:22.456Z",
+      "difficulty": 5,
+      "overrides": {
+        "2026-06-09": {
+          "completed": true,
+          "completedAt": "2026-06-09T08:34:09.789Z"
+        },
+        "2026-06-02": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:45:59.580Z"
+        },
+        "2026-06-11": {
+          "completed": true,
+          "completedAt": "2026-06-11T05:05:58.585Z"
+        },
+        "2026-06-10": {
+          "completed": true,
+          "completedAt": "2026-06-10T07:40:02.073Z"
+        },
+        "2026-06-08": {
+          "completed": true,
+          "completedAt": "2026-06-08T07:18:12.282Z"
+        },
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T09:24:25.289Z"
+        },
+        "2026-06-04": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:21:53.007Z"
+        },
+        "2026-06-05": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:06.626Z"
+        },
+        "2026-06-12": {
+          "completed": true,
+          "completedAt": "2026-06-12T05:45:38.834Z"
+        }
+      },
+      "groupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+      "title": "판매점 주문마감",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "recurringType": "daily",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.792Z",
+          "description": "판매점 일별주문마감",
+          "difficulty": 5,
+          "dueDate": "2031-06-02",
+          "id": "35b4d7c6-a5a6-463d-a862-63bc5944ef25",
+          "isPeriod": false,
+          "title": "판매점 주문마감",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "recurringType": "daily",
+          "completed": false,
+          "description": "판매점 일별주문마감",
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "isPeriod": false,
+          "dueDate": "2031-06-03",
+          "id": "20357414-dfd6-4285-878f-7e6bcb0ac423",
+          "difficulty": 5,
+          "title": "판매점 주문마감",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "판매점 일별주문마감",
+          "recurringType": "daily",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "sortOrder": 3,
+          "difficulty": 5,
+          "dueDate": "2031-06-04",
+          "isPeriod": false,
+          "id": "d4896fa2-773b-40c3-babd-50fd0377378a",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "title": "판매점 주문마감",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "recurringType": "daily",
+          "completed": false,
+          "description": "판매점 일별주문마감",
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "difficulty": 5,
+          "dueDate": "2031-06-05",
+          "id": "31c0ac66-15bb-4b3d-98c9-c01d8a3db654",
+          "isPeriod": false,
+          "title": "판매점 주문마감",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 3,
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "completed": false,
+          "description": "판매점 일별주문마감",
+          "recurringType": "daily",
+          "isPeriod": false,
+          "dueDate": "2031-06-06",
+          "difficulty": 5,
+          "id": "cfa61265-2f46-47b5-a9d9-eba406999788",
+          "title": "판매점 주문마감",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "판매점 일별주문마감",
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "completed": false,
+          "recurringType": "daily",
+          "sortOrder": 3,
+          "difficulty": 5,
+          "dueDate": "2031-06-09",
+          "isPeriod": false,
+          "id": "b2db17ee-3f02-49c2-87f4-3c1d40e7f1a3",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "title": "판매점 주문마감",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "판매점 일별주문마감",
+          "createdAt": "2026-06-10T00:42:46.793Z",
+          "completed": false,
+          "recurringType": "daily",
+          "sortOrder": 3,
+          "difficulty": 5,
+          "dueDate": "2031-06-10",
+          "isPeriod": false,
+          "id": "eba10c1d-0ad7-4922-9980-578182f22746",
+          "recurringGroupId": "b0f5a7b4-eb6f-4525-a50c-9847e330a3b5",
+          "title": "판매점 주문마감",
+          "holidayBehavior": "next"
+        }
+      ],
+      "holidayBehavior": "next"
+    },
+    "bc353470-1804-4550-8f53-86b5c9b2f062": {
+      "recurringDays": 30,
+      "recurringType": "custom",
+      "anchorDate": "2026-06-29",
+      "createdAt": "2026-06-11T05:09:33.700Z",
+      "difficulty": 2,
+      "groupId": "bc353470-1804-4550-8f53-86b5c9b2f062",
+      "title": "팟생산확인",
+      "holidayBehavior": "next",
+      "checklist": [
+        {
+          "text": "시그니처팟",
+          "completed": false,
+          "id": "b17cedf8-527d-44af-9d75-e70fc8793a51"
+        },
+        {
+          "text": "하카B",
+          "completed": false,
+          "id": "5b9b4390-563d-4d93-b7bc-8ad450ca1976"
+        },
+        {
+          "text": "기타 품목",
+          "completed": false,
+          "id": "220682cc-099a-4da8-b929-76685e32c4e7"
+        }
+      ]
+    },
+    "e308f6ce-c833-4055-b190-102ae2f88fb8": {
+      "description": "물류-전산 일일재고조사",
+      "recurringType": "daily",
+      "anchorDate": "2026-06-01",
+      "createdAt": "2026-06-01T09:23:51.637Z",
+      "difficulty": 1,
+      "overrides": {
+        "2026-06-09": {
+          "completed": true,
+          "completedAt": "2026-06-10T07:41:17.619Z"
+        },
+        "2026-06-02": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:45:58.827Z"
+        },
+        "2026-06-11": {
+          "completed": true,
+          "completedAt": "2026-06-12T00:31:12.256Z"
+        },
+        "2026-06-10": {
+          "completed": true,
+          "dailyNote": "하카Q 1개 앞/뒤가 다른 품목 발견(슬레이트블루-세이지그린)",
+          "completedAt": "2026-06-11T00:34:44.155Z"
+        },
+        "2026-06-08": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:23:36.193Z"
+        },
+        "2026-06-01": {
+          "completed": true,
+          "completedAt": "2026-06-01T09:23:54.697Z"
+        },
+        "2026-06-04": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:21:52.383Z"
+        },
+        "2026-06-05": {
+          "completed": true,
+          "completedAt": "2026-06-09T07:46:07.161Z"
+        }
+      },
+      "groupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+      "title": "재고조사",
+      "extraInstances": [
+        {
+          "isRecurring": true,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 2,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "difficulty": 1,
+          "dueDate": "2031-06-02",
+          "isPeriod": false,
+          "id": "9fcb3852-6b67-46ee-b0bf-6dc328ea4493",
+          "title": "재고조사",
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "sortOrder": 2,
+          "isPeriod": false,
+          "dueDate": "2031-06-03",
+          "difficulty": 1,
+          "id": "1c539874-1f0b-4534-abbc-401cf56a987b",
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "title": "재고조사",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "completed": false,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "sortOrder": 2,
+          "isPeriod": false,
+          "dueDate": "2031-06-04",
+          "difficulty": 1,
+          "id": "4176fa7c-492c-426c-bd27-52da5d908efc",
+          "title": "재고조사",
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "sortOrder": 2,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "completed": false,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "difficulty": 1,
+          "dueDate": "2031-06-05",
+          "id": "0c7722a3-e82f-41f2-ab4d-31aec23f87fc",
+          "isPeriod": false,
+          "title": "재고조사",
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 2,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "id": "a0dd4d4e-3596-4ab6-9c9c-cdcf0f7eaa1c",
+          "dueDate": "2031-06-06",
+          "difficulty": 1,
+          "isPeriod": false,
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "title": "재고조사",
+          "holidayBehavior": "next"
+        },
+        {
+          "isRecurring": true,
+          "description": "물류-전산 일일재고조사",
+          "recurringType": "daily",
+          "completed": false,
+          "sortOrder": 2,
+          "createdAt": "2026-06-10T00:42:46.748Z",
+          "difficulty": 1,
+          "dueDate": "2031-06-09",
+          "isPeriod": false,
+          "id": "84bd4272-5d1d-4c42-aa43-826f257d60a4",
+          "recurringGroupId": "e308f6ce-c833-4055-b190-102ae2f88fb8",
+          "title": "재고조사",
+          "holidayBehavior": "next"
+        }
+      ],
+      "holidayBehavior": "next"
+    }
+  },
+  "todos": {
+    "11871ac1-11a1-460f-9c76-1c3359a67193": {
+      "isRecurring": false,
+      "description": "11월에 소진되는 품목들 좀 있음 샤워, 그랩프, 엠버트레일일건데 전체적으로 확인해서 요청",
+      "createdAt": "2026-06-12T00:48:12.681Z",
+      "completed": false,
+      "difficulty": 2,
+      "dueDate": "2026-08-19",
+      "isPeriod": false,
+      "id": "11871ac1-11a1-460f-9c76-1c3359a67193",
+      "title": "하카B 생산요청",
+      "checklist": []
+    },
+    "1d6c0279-6bbf-4a85-8d77-66f643e4a74d": {
+      "isRecurring": false,
+      "priorityRank": 1,
+      "createdAt": "2026-06-10T01:04:29.853Z",
+      "completed": true,
+      "urgency": 10,
+      "difficulty": 5,
+      "dueDate": "2026-06-10",
+      "id": "1d6c0279-6bbf-4a85-8d77-66f643e4a74d",
+      "isPeriod": false,
+      "title": "고양마두역직영점 초도물량",
+      "completedAt": "2026-06-10T02:10:31.387Z",
+      "quadrant": "quick-win",
+      "checklist": [
+        {
+          "text": "물류전달",
+          "completed": true,
+          "id": "cc6be965-b2f3-4c68-853b-d5cece95dcd0"
+        },
+        {
+          "text": "시영님전달",
+          "completed": true,
+          "id": "35304ee6-4739-4f1f-9f67-afc0732512d9"
+        }
+      ]
+    },
+    "35005e87-7ea4-4f1e-9fb5-db00703363a3": {
+      "isRecurring": false,
+      "description": "Todo제작",
+      "id": "35005e87-7ea4-4f1e-9fb5-db00703363a3",
+      "startDate": "2026-05-28",
+      "priorityRank": 4,
+      "sortOrder": 0,
+      "createdAt": "2026-05-28T02:37:26.516Z",
+      "completed": false,
+      "urgency": 3,
+      "difficulty": 8,
+      "dueDate": "2026-06-26",
+      "isPeriod": true,
+      "endDate": "2026-06-26",
+      "title": "Todo웹 제작 프로젝트",
+      "quadrant": "long-term"
+    },
+    "36960f37-a599-41a2-ab9b-041e7a49c98a": {
+      "isRecurring": false,
+      "createdAt": "2026-06-12T09:19:57.198Z",
+      "completed": true,
+      "difficulty": 5,
+      "dueDate": "2026-07-17",
+      "id": "36960f37-a599-41a2-ab9b-041e7a49c98a",
+      "isPeriod": false,
+      "title": "제주도배송일",
+      "completedAt": "2026-06-12T09:20:00.167Z",
+      "checklist": []
+    },
+    "3ad03bd6-7657-4ae4-8a6d-e00f41734949": {
+      "isRecurring": false,
+      "createdAt": "2026-06-12T04:57:13.290Z",
+      "completed": true,
+      "difficulty": 5,
+      "dueDate": "2026-06-12",
+      "id": "3ad03bd6-7657-4ae4-8a6d-e00f41734949",
+      "isPeriod": false,
+      "title": "킹베이퍼 입금확인",
+      "completedAt": "2026-06-12T05:45:36.767Z",
+      "checklist": []
+    },
+    "4114401c-5232-4c82-aefe-ce03fc8cd911": {
+      "isRecurring": false,
+      "createdAt": "2026-06-10T07:46:07.776Z",
+      "completed": false,
+      "difficulty": 5,
+      "dueDate": "2026-06-15",
+      "id": "4114401c-5232-4c82-aefe-ce03fc8cd911",
+      "isPeriod": false,
+      "title": "직영점 재고 짜기 흰색 테두리 제한 풀기",
+      "checklist": []
+    },
+    "44b56cc4-8a2f-4c5e-a2b3-54d2d2323a47": {
+      "isRecurring": false,
+      "description": "하카부천역 인천부평시장역직영점에서 팟수령건 응대 및 시영님께 전달",
+      "createdAt": "2026-06-02T08:04:23.025Z",
+      "completed": true,
+      "difficulty": 3,
+      "dueDate": "2026-06-02",
+      "isPeriod": false,
+      "id": "44b56cc4-8a2f-4c5e-a2b3-54d2d2323a47",
+      "title": "부천역 팟수령",
+      "completedAt": "2026-06-02T08:08:56.101Z",
+      "checklist": []
+    },
+    "5c77239d-88e9-4f5a-87af-8cfd1e9b605d": {
+      "isRecurring": false,
+      "description": "C8 → A8로 변경: 엑셀, 배송웹, 커스텀웹, 매핑시트 등\n그리고 텔레방 모여있는 곳에 전달",
+      "createdAt": "2026-05-29T05:55:32.456Z",
+      "completed": true,
+      "difficulty": 2,
+      "dueDate": "2026-05-29",
+      "id": "5c77239d-88e9-4f5a-87af-8cfd1e9b605d",
+      "isPeriod": false,
+      "title": "E&T전자담배, 화순전자담배 코스변경",
+      "completedAt": "2026-05-29T05:55:36.933Z"
+    },
+    "65526101-07e4-4dee-a3cd-91f019d4ff3e": {
+      "isRecurring": false,
+      "createdAt": "2026-06-12T04:47:08.401Z",
+      "completed": false,
+      "difficulty": 5,
+      "dueDate": "2026-06-15",
+      "id": "65526101-07e4-4dee-a3cd-91f019d4ff3e",
+      "isPeriod": false,
+      "title": "문경,안동점 입금확인",
+      "checklist": []
+    },
+    "68a9b580-fb40-45ce-80aa-fef3a4193793": {
+      "isRecurring": false,
+      "createdAt": "2026-06-10T00:40:50.583Z",
+      "completed": true,
+      "difficulty": 5,
+      "dueDate": "2026-06-10",
+      "id": "68a9b580-fb40-45ce-80aa-fef3a4193793",
+      "isPeriod": false,
+      "title": "입고확인",
+      "completedAt": "2026-06-10T02:10:40.888Z",
+      "checklist": []
+    },
+    "757508ea-3f25-4e1e-ac1d-a75efd5ae38a": {
+      "isRecurring": false,
+      "createdAt": "2026-06-12T05:45:14.032Z",
+      "completed": true,
+      "difficulty": 2,
+      "dueDate": "2026-06-12",
+      "id": "757508ea-3f25-4e1e-ac1d-a75efd5ae38a",
+      "isPeriod": false,
+      "title": "부천역 팟확인",
+      "completedAt": "2026-06-12T08:14:11.795Z",
+      "checklist": []
+    },
+    "765a10dc-51de-4f52-ab04-3e17ddb55596": {
+      "isRecurring": false,
+      "description": "하카B 도매몰 제한 풀기 및 직영점 파이썬 코드 변경",
+      "createdAt": "2026-06-04T00:36:44.652Z",
+      "completed": true,
+      "urgency": 10,
+      "priorityRank": 1,
+      "difficulty": 2,
+      "dueDate": "2026-06-04",
+      "isPeriod": false,
+      "id": "765a10dc-51de-4f52-ab04-3e17ddb55596",
+      "title": "하카B 도매몰 제한 풀기 & 파이썬 코드 변경",
+      "completedAt": "2026-06-04T01:29:28.528Z",
+      "quadrant": "quick-win",
+      "checklist": [
+        {
+          "text": "도매몰 제한 풀기",
+          "completed": true,
+          "id": "8432c1c9-24c3-47e5-9ab0-9c78487d4935"
+        },
+        {
+          "text": "파이썬 코드 변경",
+          "completed": true,
+          "id": "27d309c4-92c3-4ffd-9846-92103a7c1df1"
+        }
+      ]
+    },
+    "7eb9e654-4ccc-45cf-bbe2-a216654c28a8": {
+      "isRecurring": false,
+      "createdAt": "2026-06-02T08:13:40.300Z",
+      "completed": true,
+      "difficulty": 2,
+      "dueDate": "2026-06-02",
+      "id": "7eb9e654-4ccc-45cf-bbe2-a216654c28a8",
+      "isPeriod": false,
+      "title": "드림메드 팟교환건",
+      "completedAt": "2026-06-04T01:48:15.626Z",
+      "checklist": []
+    },
+    "90384762-b50f-487a-b9a2-1ae345d043bf": {
+      "isRecurring": false,
+      "priorityRank": 1,
+      "createdAt": "2026-06-12T00:39:21.545Z",
+      "completed": true,
+      "urgency": 10,
+      "difficulty": 2,
+      "dueDate": "2026-06-12",
+      "id": "90384762-b50f-487a-b9a2-1ae345d043bf",
+      "isPeriod": false,
+      "title": "하카B 생산요청 & 고농도 생산요청",
+      "completedAt": "2026-06-12T00:51:59.571Z",
+      "quadrant": "quick-win",
+      "checklist": [
+        {
+          "text": "하카B 생산요청",
+          "completed": true,
+          "id": "d402a5d0-6eca-4a1d-9014-4f53839dca12"
+        },
+        {
+          "text": "고농도 생산요청",
+          "completed": true,
+          "id": "8a04745c-4fff-4fa9-aaaa-85728ad53639"
+        }
+      ]
+    },
+    "a272897b-881e-4df8-9b7b-5474472a248b": {
+      "isRecurring": false,
+      "description": "문자대표지출결의서작성",
+      "createdAt": "2026-06-04T00:41:43.321Z",
+      "completed": true,
+      "sortOrder": 1,
+      "difficulty": 1,
+      "dueDate": "2026-06-05",
+      "isPeriod": false,
+      "id": "a272897b-881e-4df8-9b7b-5474472a248b",
+      "title": "지출결의서작성",
+      "completedAt": "2026-06-05T00:32:34.145Z",
+      "checklist": []
+    },
+    "a45adc29-82d2-4a6f-ab62-3935adb5eb73": {
+      "isRecurring": false,
+      "description": "배분하고 추후 직영에 안 팔리는 곳 수거 계획 시영님하고 논의하였음",
+      "createdAt": "2026-06-11T01:26:31.334Z",
+      "completed": true,
+      "difficulty": 1,
+      "dueDate": "2026-06-11",
+      "isPeriod": false,
+      "id": "a45adc29-82d2-4a6f-ab62-3935adb5eb73",
+      "title": "그라운드 남은 수량 직영점배분",
+      "completedAt": "2026-06-11T01:26:33.370Z",
+      "checklist": []
+    },
+    "b7b25fc4-12cb-4d20-a56f-f2537cedb898": {
+      "isRecurring": false,
+      "description": "",
+      "createdAt": "2026-06-10T09:00:50.341Z",
+      "urgency": 8,
+      "completed": false,
+      "priorityRank": 1,
+      "difficulty": 2,
+      "dueDate": "2026-06-16",
+      "isPeriod": false,
+      "id": "b7b25fc4-12cb-4d20-a56f-f2537cedb898",
+      "title": "에어입고예정",
+      "quadrant": "quick-win",
+      "checklist": [
+        {
+          "text": "판매점 수량 풀기",
+          "completed": false,
+          "id": "190a3625-f230-4feb-ba3a-0d27b65799b2"
+        },
+        {
+          "text": "직영점 E부터 출고되도록 코드변경",
+          "completed": false,
+          "id": "ffa99789-f262-4d26-b030-c858f8ffaba3"
+        }
+      ]
+    },
+    "db2fb265-3da9-4d39-9e17-d9c8bd378b61": {
+      "isRecurring": false,
+      "description": "문자대표지출품의서작성",
+      "createdAt": "2026-06-04T00:41:29.777Z",
+      "completed": true,
+      "difficulty": 1,
+      "dueDate": "2026-06-04",
+      "isPeriod": false,
+      "id": "db2fb265-3da9-4d39-9e17-d9c8bd378b61",
+      "title": "지출품의서작성",
+      "completedAt": "2026-06-04T01:03:51.695Z",
+      "checklist": []
+    },
+    "dd81a048-25b0-4a5f-9f94-96bb7a9800f0": {
+      "isRecurring": false,
+      "description": "안 팔리는 곳 수거해서 잘 팔리는 곳으로 배분 목적\n\n*안 팔리는 곳은 그냥 전체 수거하고 미리 포장",
+      "createdAt": "2026-06-11T01:10:49.931Z",
+      "completed": false,
+      "difficulty": 2,
+      "dueDate": "2026-06-25",
+      "isPeriod": false,
+      "id": "dd81a048-25b0-4a5f-9f94-96bb7a9800f0",
+      "title": "그라운드 직영점 수거작업",
+      "checklist": []
+    },
+    "e29f8567-f7c7-40ff-90ef-870306123a6f": {
+      "isRecurring": false,
+      "description": "신규직영점 2곳 추가",
+      "createdAt": "2026-06-01T07:36:00.616Z",
+      "completed": true,
+      "difficulty": 2,
+      "dueDate": "2026-06-01",
+      "id": "e29f8567-f7c7-40ff-90ef-870306123a6f",
+      "isPeriod": false,
+      "title": "신규직영점 2곳 추가",
+      "completedAt": "2026-06-01T08:50:35.479Z"
+    },
+    "ebcf32b2-1f2b-47aa-afef-84d6bde11858": {
+      "isRecurring": false,
+      "description": "1. 영문이름변경\n2. 생산계획생성시 재고, 일평균, 소진예상일 등이 당시 스냅샷 기준이 되도록\n3. SIG-5, SIG-7 제대로 합치지지 않는 현상 수정\n4. 생산 계획 요약도 엑셀 다운되도록 (수식으로 해서)",
+      "createdAt": "2026-05-29T05:57:12.209Z",
+      "completed": true,
+      "difficulty": 5,
+      "dueDate": "2026-05-29",
+      "id": "ebcf32b2-1f2b-47aa-afef-84d6bde11858",
+      "isPeriod": false,
+      "title": "재고웹 수정",
+      "completedAt": "2026-05-29T05:57:24.407Z"
+    }
+  }
+}
