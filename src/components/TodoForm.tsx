@@ -110,7 +110,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
     recurringType?: RecurringType;
     recurringDays?: number;
     isPeriod?: boolean;
-    holidayBehavior?: 'next' | 'prev';
+    holidayBehavior?: 'next' | 'prev' | 'keep';
   }) => {
     let startDate: string | undefined = undefined;
     let endDate: string | undefined = undefined;
@@ -344,6 +344,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
                         label="반복 간격 (일)"
                         rules={[{ required: true, message: '반복 간격을 입력해주세요' }]}
                         style={{ marginBottom: 12 }}
+                        extra={<span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>💡 주 단위로 하려면 7의 배수 (예: 3주마다 = 21일). 같은 요일에 떨어집니다.</span>}
                       >
                         <InputNumber
                           min={2}
@@ -357,12 +358,14 @@ const TodoForm: React.FC<TodoFormProps> = ({
 
                     <Form.Item
                       name="holidayBehavior"
-                      label="💡 주말·휴일 마감일 조정 옵션"
+                      label="💡 주말·휴일에 걸릴 때"
                       style={{ marginBottom: 0 }}
+                      extra={<span style={{ fontSize: 11, color: 'var(--text-secondary)' }}>토요일/일요일에 반복하려면 "그대로 유지"를 선택하세요.</span>}
                     >
                       <Radio.Group size="small" buttonStyle="solid">
-                        <Radio.Button value="next">다음 근무일 연기</Radio.Button>
-                        <Radio.Button value="prev">직전 근무일 당김</Radio.Button>
+                        <Radio.Button value="next">다음 근무일</Radio.Button>
+                        <Radio.Button value="prev">직전 근무일</Radio.Button>
+                        <Radio.Button value="keep">그대로 유지</Radio.Button>
                       </Radio.Group>
                     </Form.Item>
                   </>

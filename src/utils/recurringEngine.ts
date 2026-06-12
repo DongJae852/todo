@@ -37,7 +37,7 @@ export function generateNaturalDates(
     const day = targetDate.day();
     const dateStr = targetDate.format('YYYY-MM-DD');
 
-    if (day === 0 || day === 6 || holidays.includes(dateStr)) {
+    if ((day === 0 || day === 6 || holidays.includes(dateStr)) && group.holidayBehavior !== 'keep') {
       targetDate = group.holidayBehavior === 'prev'
         ? skipToPrevWorkday(targetDate, holidays)
         : skipToWorkday(targetDate, holidays);

@@ -34,7 +34,7 @@ export interface Todo {
   recurringType?: RecurringType;
   recurringDays?: number; // custom 일 때 n일 단위
   recurringGroupId?: string; // 반복 그룹 ID
-  holidayBehavior?: 'next' | 'prev'; // 주말/휴일 동작 설정 (다음 근무일로 연기 / 직전 근무일로 당김)
+  holidayBehavior?: 'next' | 'prev' | 'keep'; // 주말/휴일 동작 (다음 근무일 연기 / 직전 근무일 당김 / 그대로 유지)
   completed: boolean;
   completedAt?: string;
   createdAt: string;
@@ -76,7 +76,7 @@ export interface RecurringGroupDoc {
   difficulty: number;
   recurringType?: RecurringType;
   recurringDays?: number;
-  holidayBehavior?: 'next' | 'prev';
+  holidayBehavior?: 'next' | 'prev' | 'keep';
   checklist?: ChecklistItem[]; // 체크리스트 구조 (완료상태 제외)
   anchorDate: string;          // 생성 시작 기준일 (가장 이른 dueDate)
   createdAt: string;

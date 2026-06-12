@@ -73,8 +73,8 @@ export function generateRecurringInstances(
     const day = targetDate.day();
     const dateStr = targetDate.format('YYYY-MM-DD');
     
-    // 주말/휴일이면 가장 가까운 미래/과거 근무일로 건너뜁니다
-    if (day === 0 || day === 6 || holidays.includes(dateStr)) {
+    // 주말/휴일이면 가장 가까운 미래/과거 근무일로 건너뜁니다 ('keep'이면 그대로 유지)
+    if ((day === 0 || day === 6 || holidays.includes(dateStr)) && baseTodo.holidayBehavior !== 'keep') {
       if (baseTodo.holidayBehavior === 'prev') {
         targetDate = skipToPrevWorkday(targetDate, holidays);
       } else {
