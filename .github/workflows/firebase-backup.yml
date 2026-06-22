@@ -2,7 +2,6 @@ name: Firebase Daily Backup
 
 on:
   schedule:
-    # 매일 KST 03:00 = UTC 18:00 (전날)
     - cron: '0 18 * * *'
   workflow_dispatch:
 
@@ -14,10 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -59,13 +60,11 @@ jobs:
           backup = {}
           total_docs = 0
 
-          # 모든 최상위 컬렉션 순회
           for col_ref in db.collections():
               col_name = col_ref.id
               docs = {}
               for doc in col_ref.stream():
                   doc_dict = doc.to_dict()
-                  # Firestore 타입 → JSON 직렬화 처리
                   docs[doc.id] = doc_dict
                   total_docs += 1
               backup[col_name] = docs
@@ -75,10 +74,9 @@ jobs:
           out_path = f"backups/db-{kst_date}.json"
 
           def json_serial(obj):
-              """Firestore 타입 JSON 직렬화"""
               if hasattr(obj, 'isoformat'):
                   return obj.isoformat()
-              if hasattr(obj, 'latitude'):  # GeoPoint
+              if hasattr(obj, 'latitude'):
                   return {'lat': obj.latitude, 'lng': obj.longitude}
               if isinstance(obj, bytes):
                   return obj.decode('utf-8', errors='replace')
@@ -95,37 +93,50 @@ jobs:
           ls -lh backups/
 
       - name: Upload backup as artifact (3-day retention)
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: firestore-backup-${{ steps.date.outputs.kst }}
           path: backups/db-${{ steps.date.outputs.kst }}.json
           retention-days: 3
 
-      - name: Clean old backups (keep last 3 days)
+      - name: Commit backups to backups branch
         run: |
-          cd backups
-          ls -1 db-*.json 2>/dev/null | sort -r | tail -n +4 | xargs -r rm -v
-          echo "Remaining backups:"
-          ls -lh db-*.json 2>/dev/null || echo "  (none)"
+          KST_DATE="${{ steps.date.outputs.kst }}"
+          BACKUP_FILE="backups/db-${KST_DATE}.json"
 
-      - name: Update heartbeat log
-        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          cp "$BACKUP_FILE" /tmp/new-backup.json
+
           mkdir -p .backup-meta
-          touch .backup-meta/log.txt
-          FSIZE=$(stat --printf="%s" "backups/db-${{ steps.date.outputs.kst }}.json" 2>/dev/null || echo "0")
+          FSIZE=$(stat --printf="%s" "$BACKUP_FILE" 2>/dev/null || echo "0")
           FSIZE_KB=$((FSIZE / 1024))
-          echo "${{ steps.date.outputs.kst }} OK (${FSIZE_KB} KB)" >> .backup-meta/log.txt
+          echo "${KST_DATE} OK (${FSIZE_KB} KB)" > /tmp/heartbeat-line.txt
+
+          if git fetch origin backups 2>/dev/null; then
+            git checkout backups
+          else
+            git checkout --orphan backups
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          mkdir -p backups .backup-meta
+          cp /tmp/new-backup.json "$BACKUP_FILE"
+
+          touch .backup-meta/log.txt
+          cat /tmp/heartbeat-line.txt >> .backup-meta/log.txt
           tail -n 90 .backup-meta/log.txt > .backup-meta/log.tmp
           mv .backup-meta/log.tmp .backup-meta/log.txt
 
-      - name: Commit backups + heartbeat
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cd backups
+          ls -1 db-*.json 2>/dev/null | sort -r | tail -n +4 | xargs -r rm -v
+          cd ..
+
           git add backups/ .backup-meta/log.txt
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore(backup): firestore ${{ steps.date.outputs.kst }} [skip ci]"
-            git push
+            git commit -m "chore(backup): firestore ${KST_DATE} [skip ci]"
+            git push origin backups
           fi
