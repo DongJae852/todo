@@ -1,11 +1,7 @@
-import { useMemo } from 'react';
-import { Typography, Badge, Button, Space, Tooltip } from 'antd';
+import { Typography, Button, Space, Tooltip } from 'antd';
 import {
   PlusOutlined,
   BellOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  UnorderedListOutlined,
   CalendarOutlined,
   SyncOutlined,
   DatabaseOutlined,
@@ -34,7 +30,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  todos,
   onAddClick,
   onTestNotification,
   notificationPermission,
@@ -49,10 +44,6 @@ const Header: React.FC<HeaderProps> = ({
   isSyncing = false,
   syncError = null,
 }) => {
-  const totalCount = todos.length;
-  const completedCount = useMemo(() => todos.filter(t => t.completed).length, [todos]);
-  const pendingCount = totalCount - completedCount;
-
   return (
     <div className="app-header">
       <div className="header-left">
@@ -72,26 +63,6 @@ const Header: React.FC<HeaderProps> = ({
             </Tooltip>
           )}
         </Title>
-      </div>
-
-      <div className="header-center">
-        <Space size="large">
-          <Tooltip title="전체 할 일">
-            <Badge count={totalCount} showZero color="#8b5cf6" overflowCount={99}>
-              <UnorderedListOutlined className="header-stat-icon" />
-            </Badge>
-          </Tooltip>
-          <Tooltip title="진행 중">
-            <Badge count={pendingCount} showZero color="#fa8c16" overflowCount={99}>
-              <ClockCircleOutlined className="header-stat-icon" />
-            </Badge>
-          </Tooltip>
-          <Tooltip title="완료">
-            <Badge count={completedCount} showZero color="#52c41a" overflowCount={99}>
-              <CheckCircleOutlined className="header-stat-icon" />
-            </Badge>
-          </Tooltip>
-        </Space>
       </div>
 
       <div className="header-right">

@@ -455,20 +455,13 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
               </Tag>
             )}
             {totalCount > 0 && (
-              <Tag color="purple">{totalCount}개 할 일</Tag>
-            )}
-            {completedCount > 0 && (
-              <Tag color="green">{completedCount}개 완료</Tag>
-            )}
-            {totalCount > 0 && (
-              <Tag style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(217, 70, 239, 0.15))',
-                border: '1px solid rgba(139, 92, 246, 0.3)',
-                color: '#e879f9',
-                fontWeight: 'bold'
-              }}>
-                ✨ 완료율 {progressPercent}%
-              </Tag>
+              <span className="day-summary">
+                <span className="day-summary-item">할 일 <b>{totalCount}</b></span>
+                <span className="day-summary-sep">·</span>
+                <span className="day-summary-item">완료 <b>{completedCount}</b></span>
+                <span className="day-summary-sep">·</span>
+                <span className="day-summary-pct">{progressPercent}%</span>
+              </span>
             )}
           </div>
         </div>
