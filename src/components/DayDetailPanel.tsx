@@ -321,42 +321,23 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
 
   const handleDragEnd = () => {
     if (dragList && draggedCategory) {
-      let newToday = todayTodos;
-      let newCustom = customTodos;
-      let newDaily = dailyTodos;
-      let newWeekly = weeklyTodos;
-      let newMonthly = monthlyTodos;
-
-      if (draggedCategory === 'today') newToday = dragList;
-      else if (draggedCategory === 'custom') newCustom = dragList;
-      else if (draggedCategory === 'daily') newDaily = dragList;
-      else if (draggedCategory === 'weekly') newWeekly = dragList;
-      else if (draggedCategory === 'monthly') newMonthly = dragList;
-
-      // 마우스를 뗐을 때(드래그 종료) 최종 순서 영구 저장 동기화!
-      const orderedList = [
-        ...projectTodos,
-        ...newToday,
-        ...newCustom,
-        ...newDaily,
-        ...newWeekly,
-        ...newMonthly,
-        ...completedTodos
-      ].filter(t => !t.isCourseTask);
-
-      // 단일(비반복) 일정은 인스턴스 sortOrder로 저장
-      onReorderTodos(orderedList.map(t => t.id));
-
-      // 반복 일정은 그룹 단위 순번으로 저장 (수천 개 인스턴스 재기록 방지)
-      const groupOrder: Record<string, number> = {};
-      let groupIndex = 0;
-      for (const t of orderedList) {
-        if (t.isRecurring && t.recurringGroupId && groupOrder[t.recurringGroupId] === undefined) {
-          groupOrder[t.recurringGroupId] = groupIndex++;
+      // 드래그한 레인만 갱신한다 (다른 레인 순서엔 영향 없음).
+      if (draggedCategory === 'today') {
+        // 당일처리(단일)만 sortOrder 재정렬 — 반복 그룹 순서는 건드리지 않음
+        onReorderTodos(dragList.filter(t => !t.isCourseTask).map(t => t.id));
+      } else {
+        // 반복 레인: 해당 레인 그룹 순서만 갱신 — 단일/다른 주기 레인은 그대로
+        // (정렬은 recurringType으로 1차 분리되므로 레인별 0,1,2 순번이면 충분)
+        const groupOrder: Record<string, number> = {};
+        let groupIndex = 0;
+        for (const t of dragList) {
+          if (t.isRecurring && t.recurringGroupId && groupOrder[t.recurringGroupId] === undefined) {
+            groupOrder[t.recurringGroupId] = groupIndex++;
+          }
         }
-      }
-      if (Object.keys(groupOrder).length > 0) {
-        onReorderRecurringGroups(groupOrder);
+        if (Object.keys(groupOrder).length > 0) {
+          onReorderRecurringGroups(groupOrder);
+        }
       }
     }
     setDraggedIndex(null);
