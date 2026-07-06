@@ -109,13 +109,16 @@ jobs:
 
           cp "$BACKUP_FILE" /tmp/new-backup.json
 
-          mkdir -p .backup-meta
           FSIZE=$(stat --printf="%s" "$BACKUP_FILE" 2>/dev/null || echo "0")
           FSIZE_KB=$((FSIZE / 1024))
           echo "${KST_DATE} OK (${FSIZE_KB} KB)" > /tmp/heartbeat-line.txt
 
+          # fix: remove local backups/ dir so branch name is not ambiguous
+          # (git checkout backups failed with exit 128: could be both file and branch)
+          rm -rf backups
+
           if git fetch origin backups 2>/dev/null; then
-            git checkout backups
+            git checkout -B backups origin/backups
           else
             git checkout --orphan backups
             git rm -rf . 2>/dev/null || true
