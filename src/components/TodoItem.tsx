@@ -184,7 +184,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
                     : ''}
                 </Tag>
                 {onOpenRecurringManager && todo.recurringGroupId && (
-                  <Tooltip title="반복 일정 모니터링">
+                  <Tooltip title="반복 일정 모니터링" mouseEnterDelay={0.3} mouseLeaveDelay={0}>
                     <SyncOutlined
                       className="recurring-manager-shortcut-icon"
                       style={{ color: '#06b6d4', cursor: 'pointer', fontSize: '12px' }}
@@ -200,7 +200,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
           </div>
           <div className="todo-item-difficulty">
             <Text className="difficulty-label">난이도</Text>
-            <Tooltip title={`${todo.difficulty}/10`}>
+            <Tooltip title={`${todo.difficulty}/10`} mouseEnterDelay={0.3} mouseLeaveDelay={0}>
               <Progress
                 percent={todo.difficulty * 10}
                 steps={10}
@@ -234,15 +234,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 okText="확인"
                 cancelText="취소"
               >
-                <Tooltip title="이전 근무일로 돌리기">
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<BackwardOutlined />}
-                    className="todo-action-btn postpone-btn"
-                    style={{ color: '#fa8c16', padding: '0 4px' }}
-                  />
-                </Tooltip>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<BackwardOutlined />}
+                  className="todo-action-btn postpone-btn"
+                  style={{ color: '#fa8c16', padding: '0 4px' }}
+                />
               </Popconfirm>
             )}
 
@@ -253,21 +251,19 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 okText="확인"
                 cancelText="취소"
               >
-                <Tooltip title="다음 근무일로 이전">
-                  <Button
-                    type="text"
-                    size="small"
-                    icon={<ForwardOutlined />}
-                    className="todo-action-btn postpone-btn"
-                    style={{ color: '#a78bfa', padding: '0 4px' }}
-                  />
-                </Tooltip>
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<ForwardOutlined />}
+                  className="todo-action-btn postpone-btn"
+                  style={{ color: '#a78bfa', padding: '0 4px' }}
+                />
               </Popconfirm>
             )}
           </div>
 
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-            <Tooltip title={todo.isCourseTask ? "코스 업무는 수정할 수 없습니다" : "편집"}>
+            <Tooltip title={todo.isCourseTask ? "코스 업무는 수정할 수 없습니다" : "편집"} mouseEnterDelay={0.3} mouseLeaveDelay={0}>
               <Button
                 type="text"
                 size="small"
@@ -279,7 +275,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
               />
             </Tooltip>
             {todo.isRecurring && todo.recurringGroupId ? (
-              <Tooltip title="반복 삭제 옵션 선택">
+              <Tooltip title="반복 삭제 옵션 선택" mouseEnterDelay={0.3} mouseLeaveDelay={0}>
                 <Button
                   type="text"
                   size="small"
@@ -291,7 +287,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 />
               </Tooltip>
             ) : todo.isCourseTask ? (
-              <Tooltip title="코스 제외/삭제 옵션 선택">
+              <Tooltip title="코스 제외/삭제 옵션 선택" mouseEnterDelay={0.3} mouseLeaveDelay={0}>
                 <Button
                   type="text"
                   size="small"
