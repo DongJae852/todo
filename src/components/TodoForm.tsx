@@ -13,7 +13,7 @@ import {
   Row,
   Col,
 } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -97,6 +97,22 @@ const TodoForm: React.FC<TodoFormProps> = ({
 
   const handleRemoveCheckItem = (itemId: string) => {
     setChecklist(checklist.filter(item => item.id !== itemId));
+  };
+
+  // 세부 항목 텍스트 인라인 수정
+  const handleEditCheckItem = (itemId: string, text: string) => {
+    setChecklist(prev => prev.map(item => (item.id === itemId ? { ...item, text } : item)));
+  };
+
+  // 세부 항목 순서 이동 (dir: -1 위 / +1 아래)
+  const handleMoveCheckItem = (index: number, dir: number) => {
+    setChecklist(prev => {
+      const target = index + dir;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
   };
 
   const handleFinish = (values: {
@@ -264,24 +280,49 @@ const TodoForm: React.FC<TodoFormProps> = ({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto' }}>
                 {checklist.map((item, index) => (
-                  <div key={item.id} style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'space-between',
-                    padding: '6px 12px',
+                  <div key={item.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    padding: '4px 6px 4px 10px',
                     background: 'rgba(255, 255, 255, 0.02)',
                     border: '1px solid rgba(255, 255, 255, 0.05)',
                     borderRadius: '8px'
                   }}>
-                    <span style={{ fontSize: '12px', color: 'var(--text-primary)' }}>
-                      {index + 1}. {item.text}
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', minWidth: '14px', flexShrink: 0 }}>
+                      {index + 1}.
                     </span>
-                    <Button 
-                      type="text" 
-                      danger 
-                      size="small" 
-                      icon={<DeleteOutlined />} 
+                    <Input
+                      size="small"
+                      value={item.text}
+                      onChange={(e) => handleEditCheckItem(item.id, e.target.value)}
+                      maxLength={80}
+                      variant="borderless"
+                      style={{ flex: 1, fontSize: '12px', color: 'var(--text-primary)', padding: '0 4px' }}
+                    />
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<ArrowUpOutlined />}
+                      disabled={index === 0}
+                      onClick={() => handleMoveCheckItem(index, -1)}
+                      style={{ padding: '0 4px', minWidth: 'auto' }}
+                    />
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={<ArrowDownOutlined />}
+                      disabled={index === checklist.length - 1}
+                      onClick={() => handleMoveCheckItem(index, 1)}
+                      style={{ padding: '0 4px', minWidth: 'auto' }}
+                    />
+                    <Button
+                      type="text"
+                      danger
+                      size="small"
+                      icon={<DeleteOutlined />}
                       onClick={() => handleRemoveCheckItem(item.id)}
+                      style={{ padding: '0 4px', minWidth: 'auto' }}
                     />
                   </div>
                 ))}
