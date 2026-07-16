@@ -13,7 +13,7 @@ import {
   Row,
   Col,
 } from 'antd';
-import { DeleteOutlined, ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { DeleteOutlined, HolderOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -45,6 +45,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
   // 세부 체크리스트 관련 상태
   const [checklist, setChecklist] = useState<ChecklistItem[]>([]);
   const [newCheckItem, setNewCheckItem] = useState('');
+  const [ckDragIndex, setCkDragIndex] = useState<number | null>(null);
 
   // 반복 일정 부분 수정을 위한 모달 상태 및 임시 저장 상태
   const [rangeModalOpen, setRangeModalOpen] = useState(false);
@@ -104,15 +105,35 @@ const TodoForm: React.FC<TodoFormProps> = ({
     setChecklist(prev => prev.map(item => (item.id === itemId ? { ...item, text } : item)));
   };
 
-  // 세부 항목 순서 이동 (dir: -1 위 / +1 아래)
-  const handleMoveCheckItem = (index: number, dir: number) => {
+  // 세부 항목 드래그 순서변경 (핸들에서만 드래그, 데스크탑 HTML5 + 모바일 터치)
+  const moveCheckItem = (from: number, to: number) => {
     setChecklist(prev => {
-      const target = index + dir;
-      if (target < 0 || target >= prev.length) return prev;
+      if (to < 0 || to >= prev.length || from === to) return prev;
       const next = [...prev];
-      [next[index], next[target]] = [next[target], next[index]];
+      const [m] = next.splice(from, 1);
+      next.splice(to, 0, m);
       return next;
     });
+  };
+
+  const handleCkDragOver = (e: React.DragEvent, hoverIndex: number) => {
+    e.preventDefault();
+    if (ckDragIndex === null || ckDragIndex === hoverIndex) return;
+    moveCheckItem(ckDragIndex, hoverIndex);
+    setCkDragIndex(hoverIndex);
+  };
+
+  const handleCkTouchMove = (e: React.TouchEvent) => {
+    if (ckDragIndex === null) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const row = el?.closest('[data-ck-index]') as HTMLElement | null;
+    if (!row) return;
+    const hoverIndex = Number(row.dataset.ckIndex);
+    if (Number.isNaN(hoverIndex) || hoverIndex === ckDragIndex) return;
+    moveCheckItem(ckDragIndex, hoverIndex);
+    setCkDragIndex(hoverIndex);
   };
 
   const handleFinish = (values: {
@@ -280,15 +301,33 @@ const TodoForm: React.FC<TodoFormProps> = ({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto' }}>
                 {checklist.map((item, index) => (
-                  <div key={item.id} style={{
+                  <div
+                    key={item.id}
+                    data-ck-index={index}
+                    onDragOver={(e) => handleCkDragOver(e, index)}
+                    style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '4px',
-                    padding: '4px 6px 4px 10px',
+                    padding: '4px 6px 4px 6px',
                     background: 'rgba(255, 255, 255, 0.02)',
                     border: '1px solid rgba(255, 255, 255, 0.05)',
-                    borderRadius: '8px'
+                    borderRadius: '8px',
+                    opacity: ckDragIndex === index ? 0.4 : 1,
+                    transition: 'opacity 0.15s'
                   }}>
+                    <span
+                      className="ck-drag-handle"
+                      draggable
+                      onDragStart={() => setCkDragIndex(index)}
+                      onDragEnd={() => setCkDragIndex(null)}
+                      onTouchStart={() => setCkDragIndex(index)}
+                      onTouchMove={handleCkTouchMove}
+                      onTouchEnd={() => setCkDragIndex(null)}
+                      style={{ display: 'inline-flex', alignItems: 'center', color: 'var(--text-secondary)', cursor: 'grab', touchAction: 'none', padding: '0 2px', flexShrink: 0 }}
+                    >
+                      <HolderOutlined />
+                    </span>
                     <span style={{ fontSize: '12px', color: 'var(--text-secondary)', minWidth: '14px', flexShrink: 0 }}>
                       {index + 1}.
                     </span>
@@ -299,22 +338,6 @@ const TodoForm: React.FC<TodoFormProps> = ({
                       maxLength={80}
                       variant="borderless"
                       style={{ flex: 1, fontSize: '12px', color: 'var(--text-primary)', padding: '0 4px' }}
-                    />
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={<ArrowUpOutlined />}
-                      disabled={index === 0}
-                      onClick={() => handleMoveCheckItem(index, -1)}
-                      style={{ padding: '0 4px', minWidth: 'auto' }}
-                    />
-                    <Button
-                      type="text"
-                      size="small"
-                      icon={<ArrowDownOutlined />}
-                      disabled={index === checklist.length - 1}
-                      onClick={() => handleMoveCheckItem(index, 1)}
-                      style={{ padding: '0 4px', minWidth: 'auto' }}
                     />
                     <Button
                       type="text"
