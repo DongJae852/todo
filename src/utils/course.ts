@@ -1,5 +1,42 @@
 import dayjs from 'dayjs';
-import type { Holiday } from '../types/todo';
+import type { Holiday, CourseTask, ChecklistItem } from '../types/todo';
+
+/**
+ * 특정 날짜에 적용될 코스 업무의 실제 구조(제목/난이도/체크리스트)를 계산합니다.
+ * 우선순위: 이 날짜만 수정(dateOverrides) > 향후 수정 버전(versions, from<=date 중 최신) > 기본 템플릿
+ */
+export function resolveCourseTask(
+  task: CourseTask,
+  dateStr: string
+): { title: string; difficulty: number; checklist?: ChecklistItem[] } {
+  let title = task.title;
+  let difficulty = task.difficulty;
+  let checklist = task.checklist;
+
+  // 1) 향후 수정 버전: from <= dateStr 중 가장 늦은 버전 적용 (versions는 from 오름차순 가정)
+  if (task.versions && task.versions.length > 0) {
+    let chosen: typeof task.versions[number] | undefined;
+    for (const v of task.versions) {
+      if (v.from <= dateStr) chosen = v;
+      else break;
+    }
+    if (chosen) {
+      if (chosen.title !== undefined) title = chosen.title;
+      if (chosen.difficulty !== undefined) difficulty = chosen.difficulty;
+      if (chosen.checklist !== undefined) checklist = chosen.checklist;
+    }
+  }
+
+  // 2) 이 날짜만 수정: 최종 오버라이드
+  const ov = task.dateOverrides?.[dateStr];
+  if (ov) {
+    if (ov.title !== undefined) title = ov.title;
+    if (ov.difficulty !== undefined) difficulty = ov.difficulty;
+    if (ov.checklist !== undefined) checklist = ov.checklist;
+  }
+
+  return { title, difficulty, checklist };
+}
 
 export const BASE_DATE = '2025-05-08';
 export const COURSES = ['A', 'B', 'C', 'D', 'E'] as const;

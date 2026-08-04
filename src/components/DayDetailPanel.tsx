@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import type { Todo, TodoWithPriority, Holiday, CourseTask, CourseDayState } from '../types/todo';
 import { getTodosWithPriority } from '../utils/priority';
 import TodoItem from './TodoItem';
-import { getCourseForDate } from '../utils/course';
+import { getCourseForDate, resolveCourseTask } from '../utils/course';
 
 const { Title, Text } = Typography;
 
@@ -114,18 +114,20 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
         const key = `${dateStr}_${task.id}`;
         if (!excludedCourseTasks[key]) {
           const dayState = courseDailyState[key];
-          // 체크리스트 구조는 템플릿(task.checklist)에서, 완료 상태는 일자별 상태에서 병합
-          const checklist = task.checklist && task.checklist.length > 0
-            ? task.checklist.map(item => ({
+          // 이 날짜에 적용되는 구조(제목/난이도/체크리스트)를 오버라이드/버전까지 반영해 계산
+          const resolved = resolveCourseTask(task, dateStr);
+          // 체크리스트 구조는 resolved에서, 완료 상태는 일자별 상태에서 병합
+          const checklist = resolved.checklist && resolved.checklist.length > 0
+            ? resolved.checklist.map(item => ({
                 ...item,
                 completed: dayState?.checklist?.[item.id] ?? false,
               }))
             : undefined;
           list.push({
             id: `course-${task.id}-${dateStr}`,
-            title: task.title,
+            title: resolved.title,
             dueDate: dateStr,
-            difficulty: task.difficulty,
+            difficulty: resolved.difficulty,
             isRecurring: false,
             completed: !!completedCourseTasks[key],
             createdAt: dateStr,

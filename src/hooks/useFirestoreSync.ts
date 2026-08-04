@@ -95,7 +95,7 @@ function areRecordsEqual(a: Record<string, boolean>, b: Record<string, boolean>)
   return true;
 }
 
-// 코스 업무(템플릿) 동등성 — 제목/코스/난이도 + 체크리스트 구조 비교
+// 코스 업무(템플릿) 동등성 — 제목/코스/난이도 + 체크리스트 + 버전/일자별 오버라이드 비교
 function isCourseTaskEqual(a: CourseTask, b: CourseTask): boolean {
   if (a.title !== b.title || a.course !== b.course || a.difficulty !== b.difficulty) return false;
   const clA = a.checklist || [];
@@ -104,6 +104,9 @@ function isCourseTaskEqual(a: CourseTask, b: CourseTask): boolean {
   for (let i = 0; i < clA.length; i++) {
     if (clA[i].id !== clB[i].id || clA[i].text !== clB[i].text) return false;
   }
+  // 버전/일자별 오버라이드는 구조가 단순하므로 직렬화 비교
+  if (JSON.stringify(a.versions || null) !== JSON.stringify(b.versions || null)) return false;
+  if (JSON.stringify(a.dateOverrides || null) !== JSON.stringify(b.dateOverrides || null)) return false;
   return true;
 }
 

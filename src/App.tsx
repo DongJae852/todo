@@ -4,7 +4,7 @@ import koKR from 'antd/locale/ko_KR';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import type { Dayjs } from 'dayjs';
-import type { Todo, CourseTask, CourseDayState } from './types/todo';
+import type { Todo, CourseTask, CourseDayState, ChecklistItem } from './types/todo';
 import { useTodos } from './hooks/useTodos';
 import { useNotification } from './hooks/useNotification';
 import { useHolidays } from './hooks/useHolidays';
@@ -78,6 +78,7 @@ const App: React.FC = () => {
   // 코스 업무 편집 모달 상태
   const [courseTaskEditOpen, setCourseTaskEditOpen] = useState(false);
   const [editingCourseTask, setEditingCourseTask] = useState<CourseTask | null>(null);
+  const [editingCourseDate, setEditingCourseDate] = useState<string>('');
 
   // 반복 일정의 그룹 단위 표시 순서 (groupId -> 순번). 인스턴스마다 sortOrder를 쓰지 않고 그룹 단위로만 저장한다.
   const [recurringGroupOrder, setRecurringGroupOrder] = useState<Record<string, number>>(() => {
@@ -231,7 +232,9 @@ const App: React.FC = () => {
     if (todo.isCourseTask && todo.courseTaskId) {
       const ct = courseTasks.find(t => t.id === todo.courseTaskId);
       if (ct) {
+        // 편집 대상 코스 인스턴스의 날짜 (합성 id 끝 10자리) — 적용 범위 계산에 사용
         setEditingCourseTask(ct);
+        setEditingCourseDate(todo.dueDate || todo.id.slice(-10));
         setCourseTaskEditOpen(true);
       }
       return;
@@ -320,8 +323,57 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const handleUpdateCourseTask = useCallback((id: string, updates: Partial<Omit<CourseTask, 'id' | 'course'>>) => {
-    setCourseTasks(prev => prev.map(t => (t.id === id ? { ...t, ...updates } : t)));
+  // 코스 업무 편집 저장 — 적용 범위(mode)에 따라 템플릿/버전/일자별 오버라이드로 분기
+  const handleUpdateCourseTask = useCallback((
+    id: string,
+    mode: 'single' | 'future' | 'all',
+    dateStr: string,
+    values: { title: string; difficulty: number; checklist?: ChecklistItem[] }
+  ) => {
+    setCourseTasks(prev => prev.map(t => {
+      if (t.id !== id) return t;
+
+      if (mode === 'all') {
+        // 전체 일정: 기본 템플릿을 덮어쓰고 그동안의 버전/일자별 오버라이드는 모두 정리
+        return {
+          ...t,
+          title: values.title,
+          difficulty: values.difficulty,
+          checklist: values.checklist,
+          versions: undefined,
+          dateOverrides: undefined,
+        };
+      }
+
+      if (mode === 'future') {
+        // 이 날짜 및 향후: dateStr부터 적용되는 버전 추가 (이후 버전/오버라이드는 덮어씀)
+        const versions = (t.versions || []).filter(v => v.from < dateStr);
+        versions.push({
+          from: dateStr,
+          title: values.title,
+          difficulty: values.difficulty,
+          checklist: values.checklist,
+        });
+        versions.sort((a, b) => a.from.localeCompare(b.from));
+        const remainingOverrides = t.dateOverrides
+          ? Object.fromEntries(Object.entries(t.dateOverrides).filter(([d]) => d < dateStr))
+          : undefined;
+        return {
+          ...t,
+          versions,
+          dateOverrides: remainingOverrides && Object.keys(remainingOverrides).length > 0 ? remainingOverrides : undefined,
+        };
+      }
+
+      // single: 이 날짜만 오버라이드
+      const dateOverrides = { ...(t.dateOverrides || {}) };
+      dateOverrides[dateStr] = {
+        title: values.title,
+        difficulty: values.difficulty,
+        checklist: values.checklist,
+      };
+      return { ...t, dateOverrides };
+    }));
   }, []);
 
   const handleToggleCourseTask = useCallback((dateStr: string, courseTaskId: string) => {
@@ -497,6 +549,7 @@ const App: React.FC = () => {
             setEditingCourseTask(null);
           }}
           task={editingCourseTask}
+          dateStr={editingCourseDate}
           onSave={handleUpdateCourseTask}
         />
       </div>

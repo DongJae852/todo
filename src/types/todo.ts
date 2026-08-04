@@ -3,12 +3,26 @@ export interface Holiday {
   reason?: string; // 휴일 사유 (선택)
 }
 
+// 코스 업무의 구조(제목/난이도/체크리스트) 부분 오버라이드
+export interface CourseTaskOverride {
+  title?: string;
+  difficulty?: number;
+  checklist?: ChecklistItem[];
+}
+
+// "향후 모든 일정 수정"으로 생긴 효력 발생일(inclusive) 기준 버전
+export interface CourseTaskVersion extends CourseTaskOverride {
+  from: string; // YYYY-MM-DD (이 날짜부터 적용)
+}
+
 export interface CourseTask {
   id: string;
   title: string;
   course: 'A' | 'B' | 'C' | 'D' | 'E';
   difficulty: number;
   checklist?: ChecklistItem[]; // 코스 업무 세부 체크리스트 (템플릿 구조, 완료상태는 일자별로 관리)
+  versions?: CourseTaskVersion[];              // "향후" 수정 버전 (from 오름차순)
+  dateOverrides?: Record<string, CourseTaskOverride>; // "이 날짜만" 수정 (key = YYYY-MM-DD)
 }
 
 // 코스 업무의 일자별 개별 상태 (메모 + 체크리스트 완료 상태). key = `${YYYY-MM-DD}_${courseTaskId}`
