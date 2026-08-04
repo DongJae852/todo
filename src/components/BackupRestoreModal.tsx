@@ -4,7 +4,7 @@ import {
   DownloadOutlined,
   DatabaseOutlined,
 } from '@ant-design/icons';
-import type { Todo, Holiday, CourseTask } from '../types/todo';
+import type { Todo, Holiday, CourseTask, CourseDayState } from '../types/todo';
 
 const { Text, Paragraph, Title } = Typography;
 
@@ -16,12 +16,14 @@ interface BackupRestoreModalProps {
   courseTasks: CourseTask[];
   completedCourseTasks: Record<string, boolean>;
   excludedCourseTasks: Record<string, boolean>;
+  courseDailyState: Record<string, CourseDayState>;
   onImportBackup: (
     todos: Todo[],
     holidays: Holiday[],
     courseTasks?: CourseTask[],
     completedCourseTasks?: Record<string, boolean>,
-    excludedCourseTasks?: Record<string, boolean>
+    excludedCourseTasks?: Record<string, boolean>,
+    courseDailyState?: Record<string, CourseDayState>
   ) => void;
 }
 
@@ -33,6 +35,7 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
   courseTasks,
   completedCourseTasks,
   excludedCourseTasks,
+  courseDailyState,
   onImportBackup,
 }) => {
   const [hasCustomSnapshot, setHasCustomSnapshot] = useState(
@@ -48,8 +51,9 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
         courseTasks,
         completedCourseTasks,
         excludedCourseTasks,
+        courseDailyState,
         exportedAt: new Date().toISOString(),
-        version: '1.1.0',
+        version: '1.2.0',
       };
       const blob = new Blob([JSON.stringify(backupData, null, 2)], {
         type: 'application/json',
@@ -77,6 +81,7 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
         courseTasks,
         completedCourseTasks,
         excludedCourseTasks,
+        courseDailyState,
         savedAt: new Date().toISOString(),
       };
       localStorage.setItem('todo_app_user_custom_snapshot', JSON.stringify(snapshotData));
@@ -102,12 +107,14 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
         const importedCourseTasks = data.courseTasks || [];
         const importedCourseCompletions = data.completedCourseTasks || {};
         const importedCourseExclusions = data.excludedCourseTasks || {};
+        const importedCourseDailyState = data.courseDailyState || {};
         onImportBackup(
           importedTodos,
           importedHolidays,
           importedCourseTasks,
           importedCourseCompletions,
-          importedCourseExclusions
+          importedCourseExclusions,
+          importedCourseDailyState
         );
         message.success(`🎉 저장해 두신 커스텀 스냅샷으로 성공적으로 복원되었습니다! (할 일 ${importedTodos.length}개, 휴일 ${importedHolidays.length}개)`);
         onClose();

@@ -263,7 +263,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
           </div>
 
           <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-            <Tooltip title={todo.isCourseTask ? "코스 업무는 수정할 수 없습니다" : "편집"} mouseEnterDelay={0.3} mouseLeaveDelay={0}>
+            <Tooltip title={todo.isCourseTask ? "코스 업무 편집 (제목/난이도/체크리스트)" : "편집"} mouseEnterDelay={0.3} mouseLeaveDelay={0}>
               <Button
                 type="text"
                 size="small"
@@ -271,7 +271,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 onClick={() => onEdit(todo)}
                 className="todo-action-btn"
                 style={{ padding: '0 4px' }}
-                disabled={todo.isCourseTask}
               />
             </Tooltip>
             {todo.isRecurring && todo.recurringGroupId ? (

@@ -8,6 +8,13 @@ export interface CourseTask {
   title: string;
   course: 'A' | 'B' | 'C' | 'D' | 'E';
   difficulty: number;
+  checklist?: ChecklistItem[]; // 코스 업무 세부 체크리스트 (템플릿 구조, 완료상태는 일자별로 관리)
+}
+
+// 코스 업무의 일자별 개별 상태 (메모 + 체크리스트 완료 상태). key = `${YYYY-MM-DD}_${courseTaskId}`
+export interface CourseDayState {
+  dailyNote?: string;
+  checklist?: Record<string, boolean>; // checklistItemId -> completed
 }
 
 export type RecurringType = 'daily' | 'weekly' | 'monthly' | 'custom';

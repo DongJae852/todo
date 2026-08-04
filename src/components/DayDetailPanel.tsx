@@ -3,7 +3,7 @@ import { Typography, Empty, Button, Tag, Modal, Radio, Space } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import type { Todo, TodoWithPriority, Holiday, CourseTask } from '../types/todo';
+import type { Todo, TodoWithPriority, Holiday, CourseTask, CourseDayState } from '../types/todo';
 import { getTodosWithPriority } from '../utils/priority';
 import TodoItem from './TodoItem';
 import { getCourseForDate } from '../utils/course';
@@ -29,6 +29,7 @@ interface DayDetailPanelProps {
   courseTasks: CourseTask[];
   completedCourseTasks: Record<string, boolean>;
   excludedCourseTasks: Record<string, boolean>;
+  courseDailyState: Record<string, CourseDayState>;
   holidays: Holiday[];
 }
 
@@ -59,6 +60,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   courseTasks,
   completedCourseTasks,
   excludedCourseTasks,
+  courseDailyState,
   holidays,
 }) => {
   const dateStr = selectedDate.format('YYYY-MM-DD');
@@ -111,6 +113,14 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
       activeCourseTasks.forEach(task => {
         const key = `${dateStr}_${task.id}`;
         if (!excludedCourseTasks[key]) {
+          const dayState = courseDailyState[key];
+          // 체크리스트 구조는 템플릿(task.checklist)에서, 완료 상태는 일자별 상태에서 병합
+          const checklist = task.checklist && task.checklist.length > 0
+            ? task.checklist.map(item => ({
+                ...item,
+                completed: dayState?.checklist?.[item.id] ?? false,
+              }))
+            : undefined;
           list.push({
             id: `course-${task.id}-${dateStr}`,
             title: task.title,
@@ -122,13 +132,15 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
             isCourseTask: true,
             courseTaskId: task.id,
             course: task.course,
+            checklist,
+            dailyNote: dayState?.dailyNote,
           });
         }
       });
     }
 
     return list;
-  }, [todos, selectedDate, isOffDay, dateStr, course, courseTasks, excludedCourseTasks, completedCourseTasks]);
+  }, [todos, selectedDate, isOffDay, dateStr, course, courseTasks, excludedCourseTasks, completedCourseTasks, courseDailyState]);
 
   // 우선순위 1차 산출
   const priorityTodos = getTodosWithPriority(dayTodos);

@@ -4,7 +4,7 @@ import koKR from 'antd/locale/ko_KR';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import type { Dayjs } from 'dayjs';
-import type { Todo, CourseTask } from './types/todo';
+import type { Todo, CourseTask, CourseDayState } from './types/todo';
 import { useTodos } from './hooks/useTodos';
 import { useNotification } from './hooks/useNotification';
 import { useHolidays } from './hooks/useHolidays';
@@ -17,6 +17,7 @@ import HolidayManager from './components/HolidayManager';
 import RecurringManagerModal from './components/RecurringManagerModal';
 import BackupRestoreModal from './components/BackupRestoreModal';
 import CourseManagerModal from './components/CourseManagerModal';
+import CourseTaskEditModal from './components/CourseTaskEditModal';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
@@ -64,6 +65,20 @@ const App: React.FC = () => {
     }
   });
 
+  // 코스 업무의 일자별 개별 상태 (메모 + 체크리스트 완료). key = `${YYYY-MM-DD}_${courseTaskId}`
+  const [courseDailyState, setCourseDailyState] = useState<Record<string, CourseDayState>>(() => {
+    try {
+      const data = localStorage.getItem('dongjae-todo-course-daily-state');
+      return data ? JSON.parse(data) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  // 코스 업무 편집 모달 상태
+  const [courseTaskEditOpen, setCourseTaskEditOpen] = useState(false);
+  const [editingCourseTask, setEditingCourseTask] = useState<CourseTask | null>(null);
+
   // 반복 일정의 그룹 단위 표시 순서 (groupId -> 순번). 인스턴스마다 sortOrder를 쓰지 않고 그룹 단위로만 저장한다.
   const [recurringGroupOrder, setRecurringGroupOrder] = useState<Record<string, number>>(() => {
     try {
@@ -86,6 +101,8 @@ const App: React.FC = () => {
     setCompletedCourseTasks,
     excludedCourseTasks,
     setExcludedCourseTasks,
+    courseDailyState,
+    setCourseDailyState,
     recurringGroupOrder,
     setRecurringGroupOrder
   });
@@ -102,6 +119,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('dongjae-todo-course-exclusions', JSON.stringify(excludedCourseTasks));
   }, [excludedCourseTasks]);
+
+  useEffect(() => {
+    localStorage.setItem('dongjae-todo-course-daily-state', JSON.stringify(courseDailyState));
+  }, [courseDailyState]);
 
   useEffect(() => {
     localStorage.setItem('dongjae-todo-recurring-group-order', JSON.stringify(recurringGroupOrder));
@@ -134,13 +155,15 @@ const App: React.FC = () => {
     importedHolidays: typeof holidays,
     importedCourseTasks?: CourseTask[],
     importedCourseCompletions?: Record<string, boolean>,
-    importedCourseExclusions?: Record<string, boolean>
+    importedCourseExclusions?: Record<string, boolean>,
+    importedCourseDailyState?: Record<string, CourseDayState>
   ) => {
     setTodos(importedTodos);
     setHolidays(importedHolidays);
     if (importedCourseTasks) setCourseTasks(importedCourseTasks);
     if (importedCourseCompletions) setCompletedCourseTasks(importedCourseCompletions);
     if (importedCourseExclusions) setExcludedCourseTasks(importedCourseExclusions);
+    if (importedCourseDailyState) setCourseDailyState(importedCourseDailyState);
   }, [setTodos, setHolidays]);
 
   // 첫 진입 시 로컬스토리지에 기존 데이터가 없고 백업 파일이 존재하면 자동으로 복원
@@ -159,12 +182,14 @@ const App: React.FC = () => {
             const importedCourseTasks = data.courseTasks || [];
             const importedCourseCompletions = data.completedCourseTasks || {};
             const importedCourseExclusions = data.excludedCourseTasks || {};
+            const importedCourseDailyState = data.courseDailyState || {};
             handleImportBackup(
               importedTodos,
               importedHolidays,
               importedCourseTasks,
               importedCourseCompletions,
-              importedCourseExclusions
+              importedCourseExclusions,
+              importedCourseDailyState
             );
           }
         })
@@ -202,9 +227,49 @@ const App: React.FC = () => {
   };
 
   const handleEdit = (todo: Todo) => {
+    // 코스 업무는 별도의 코스 업무 편집 모달로 라우팅 (제목/난이도/체크리스트 템플릿 수정)
+    if (todo.isCourseTask && todo.courseTaskId) {
+      const ct = courseTasks.find(t => t.id === todo.courseTaskId);
+      if (ct) {
+        setEditingCourseTask(ct);
+        setCourseTaskEditOpen(true);
+      }
+      return;
+    }
     setEditingTodo(todo);
     setFormOpen(true);
   };
+
+  // 상세 패널에서의 직접 업데이트. 코스 업무(합성 id)는 일자별 상태(메모/체크리스트 완료)로 저장한다.
+  const handleUpdateDirectly = useCallback((
+    todo: Todo,
+    mode?: 'single' | 'future' | 'all',
+    selDate?: string
+  ) => {
+    if (todo.id.startsWith('course-') && todo.courseTaskId) {
+      const dateStr = todo.id.slice(-10);
+      const key = `${dateStr}_${todo.courseTaskId}`;
+      const checklistState: Record<string, boolean> = {};
+      (todo.checklist || []).forEach(item => {
+        checklistState[item.id] = item.completed;
+      });
+      const note = todo.dailyNote?.trim();
+      setCourseDailyState(prev => {
+        const next = { ...prev };
+        if (!note && Object.keys(checklistState).length === 0) {
+          delete next[key];
+        } else {
+          next[key] = {
+            dailyNote: note || undefined,
+            checklist: Object.keys(checklistState).length > 0 ? checklistState : undefined,
+          };
+        }
+        return next;
+      });
+      return;
+    }
+    updateTodo(todo, mode, selDate);
+  }, [updateTodo]);
 
   const handleFormClose = () => {
     setFormOpen(false);
@@ -244,6 +309,19 @@ const App: React.FC = () => {
       });
       return next;
     });
+    setCourseDailyState(prev => {
+      const next = { ...prev };
+      Object.keys(next).forEach(key => {
+        if (key.endsWith(`_${id}`)) {
+          delete next[key];
+        }
+      });
+      return next;
+    });
+  }, []);
+
+  const handleUpdateCourseTask = useCallback((id: string, updates: Partial<Omit<CourseTask, 'id' | 'course'>>) => {
+    setCourseTasks(prev => prev.map(t => (t.id === id ? { ...t, ...updates } : t)));
   }, []);
 
   const handleToggleCourseTask = useCallback((dateStr: string, courseTaskId: string) => {
@@ -347,7 +425,7 @@ const App: React.FC = () => {
               onToggleComplete={handleToggleComplete}
               onEdit={handleEdit}
               onDelete={handleDeleteTodo}
-              onUpdateDirectly={updateTodo}
+              onUpdateDirectly={handleUpdateDirectly}
               onAddTodo={handleAddClick}
               isOffDay={checkIsOffDay(selectedDate)}
               isHoliday={isHoliday(selectedDate.format('YYYY-MM-DD'))}
@@ -360,6 +438,7 @@ const App: React.FC = () => {
               courseTasks={courseTasks}
               completedCourseTasks={completedCourseTasks}
               excludedCourseTasks={excludedCourseTasks}
+              courseDailyState={courseDailyState}
               holidays={holidays}
             />
           </div>
@@ -399,6 +478,7 @@ const App: React.FC = () => {
           courseTasks={courseTasks}
           completedCourseTasks={completedCourseTasks}
           excludedCourseTasks={excludedCourseTasks}
+          courseDailyState={courseDailyState}
           onImportBackup={handleImportBackup}
         />
 
@@ -408,6 +488,16 @@ const App: React.FC = () => {
           courseTasks={courseTasks}
           onAddCourseTask={handleAddCourseTask}
           onRemoveCourseTask={handleRemoveCourseTask}
+        />
+
+        <CourseTaskEditModal
+          open={courseTaskEditOpen}
+          onClose={() => {
+            setCourseTaskEditOpen(false);
+            setEditingCourseTask(null);
+          }}
+          task={editingCourseTask}
+          onSave={handleUpdateCourseTask}
         />
       </div>
     </ConfigProvider>
