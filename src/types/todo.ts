@@ -107,6 +107,17 @@ export interface RecurringGroupDoc {
   extraInstances?: Todo[];     // 자연 날짜가 아닌 위치의 인스턴스(연기 등)
 }
 
+// 전역 변경 이력 (언제/무엇을 어떻게 바꿨는지) — 사이드 드로어에서 조회
+export interface ChangeLogEntry {
+  id: string;
+  at: string;                       // 변경 시각 (ISO)
+  kind: 'recurring-reschedule';     // 향후 확장 가능
+  title: string;                    // 대상 일정 제목
+  summary: string;                  // 사람이 읽는 요약 (예: "매주 월요일 → 매주 목요일")
+  effectiveFrom: string;            // 적용 기준일 (YYYY-MM-DD)
+  detail?: string;                  // 부가 설명
+}
+
 export interface QuadrantInfo {
   key: Quadrant;
   label: string;

@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Modal, Input, List, Button, Typography, Space, Tag, Empty } from 'antd';
-import { SearchOutlined, CalendarOutlined, CheckOutlined, RedoOutlined, LeftOutlined, AimOutlined } from '@ant-design/icons';
+import { SearchOutlined, CalendarOutlined, CheckOutlined, RedoOutlined, LeftOutlined, AimOutlined, RetweetOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import type { Todo } from '../types/todo';
 
@@ -12,6 +12,7 @@ interface RecurringManagerModalProps {
   todos: Todo[];
   selectedGroupId: string | null;
   onJumpToDate: (dateStr: string) => void;
+  onRequestReschedule?: (group: RecurringGroup) => void;
 }
 
 interface RecurringGroup {
@@ -51,6 +52,7 @@ const RecurringManagerModal: React.FC<RecurringManagerModalProps> = ({
   todos,
   selectedGroupId,
   onJumpToDate,
+  onRequestReschedule,
 }) => {
   const [search, setSearch] = useState('');
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null);
@@ -246,6 +248,23 @@ const RecurringManagerModal: React.FC<RecurringManagerModalProps> = ({
                 {activeGroup.recurringType === 'custom' && activeGroup.recurringDays ? ` (${activeGroup.recurringDays}일 단위)` : ''}
               </Tag>
             </div>
+            {onRequestReschedule && (
+              <Button
+                icon={<RetweetOutlined />}
+                onClick={() => onRequestReschedule(activeGroup)}
+                style={{
+                  width: '100%',
+                  marginBottom: '12px',
+                  height: '38px',
+                  background: 'linear-gradient(135deg, rgba(6,182,212,0.15), rgba(139,92,246,0.15))',
+                  borderColor: 'rgba(6,182,212,0.35)',
+                  color: '#22d3ee',
+                  fontWeight: 'bold',
+                }}
+              >
+                🗓️ 이 날짜부터 반복 요일·주기 변경 (과거 보존)
+              </Button>
+            )}
             <Text type="secondary" style={{ fontSize: '12px', display: 'block', marginBottom: '8px' }}>
               📅 배정된 날짜 (클릭하면 그 날짜로 이동) · 총 {activeGroup.instances.length}개
             </Text>

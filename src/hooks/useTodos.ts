@@ -1,7 +1,7 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
-import type { Todo } from '../types/todo';
+import type { Todo, RecurringType } from '../types/todo';
 import { loadTodos, saveTodos } from '../utils/storage';
 import { generateRecurringInstances, skipToWorkday, skipToPrevWorkday } from '../utils/recurring';
 
@@ -21,7 +21,18 @@ type Action =
   | { type: 'REORDER_TODOS'; payload: { orderedIds: string[] } }
   | { type: 'RESCHEDULE_TODOS'; payload: { holidays: string[] } }
   | { type: 'POSTPONE_TODO'; payload: { id: string; holidays: string[] } }
-  | { type: 'PREV_POSTPONE_TODO'; payload: { id: string; holidays: string[] } };
+  | { type: 'PREV_POSTPONE_TODO'; payload: { id: string; holidays: string[] } }
+  | {
+      type: 'RESCHEDULE_RECURRING';
+      payload: {
+        groupId: string;
+        fromDate: string;         // 이 날짜부터 새 규칙 적용 (inclusive)
+        newAnchor: string;        // 새 규칙의 첫 발생일
+        newRecurringType: RecurringType;
+        newRecurringDays?: number;
+        holidays: string[];
+      };
+    };
 
 function todoReducer(state: Todo[], action: Action): Todo[] {
   switch (action.type) {
@@ -233,6 +244,48 @@ function todoReducer(state: Todo[], action: Action): Todo[] {
         return todo;
       });
     }
+    case 'RESCHEDULE_RECURRING': {
+      const { groupId, fromDate, newAnchor, newRecurringType, newRecurringDays, holidays } = action.payload;
+      const groupInsts = state.filter(t => t.recurringGroupId === groupId);
+      if (groupInsts.length === 0) return state;
+
+      const others = state.filter(t => t.recurringGroupId !== groupId);
+
+      // 1) 기준일 이전(과거) 인스턴스는 실제 날짜/완료/메모 그대로 보존하되, 단일 일정으로 전환하여 박제
+      const pastSingles = groupInsts
+        .filter(t => t.dueDate < fromDate)
+        .map(t => ({
+          ...t,
+          isRecurring: false,
+          recurringType: undefined,
+          recurringDays: undefined,
+          recurringGroupId: undefined,
+          holidayBehavior: undefined,
+        }));
+
+      // 2) 새 규칙의 베이스: 그룹의 가장 이른 인스턴스에서 공통 속성만 가져온다
+      const template = groupInsts.reduce((a, b) => (a.dueDate < b.dueDate ? a : b));
+      const baseTodo = {
+        title: template.title,
+        description: template.description,
+        dueDate: newAnchor,
+        difficulty: template.difficulty,
+        isPeriod: false,
+        isRecurring: true,
+        recurringType: newRecurringType,
+        recurringDays: newRecurringType === 'custom' ? newRecurringDays : undefined,
+        holidayBehavior: template.holidayBehavior || 'next',
+        // 체크리스트는 구조만 복제 (완료상태 초기화)
+        checklist: template.checklist
+          ? template.checklist.map(c => ({ id: c.id, text: c.text, completed: false }))
+          : undefined,
+      } as Omit<Todo, 'id' | 'completed' | 'completedAt' | 'createdAt'>;
+
+      const newGroupId = uuidv4();
+      const newInstances = generateRecurringInstances(baseTodo, newGroupId, holidays);
+
+      return [...others, ...pastSingles, ...newInstances];
+    }
     default:
       return state;
   }
@@ -301,6 +354,17 @@ export function useTodos() {
     dispatch({ type: 'PREV_POSTPONE_TODO', payload: { id, holidays: holidaysList } });
   }, []);
 
+  const rescheduleRecurring = useCallback((params: {
+    groupId: string;
+    fromDate: string;
+    newAnchor: string;
+    newRecurringType: RecurringType;
+    newRecurringDays?: number;
+    holidays: string[];
+  }) => {
+    dispatch({ type: 'RESCHEDULE_RECURRING', payload: params });
+  }, []);
+
   const setTodos = useCallback((todosList: Todo[]) => {
     dispatch({ type: 'SET_TODOS', payload: todosList });
   }, []);
@@ -316,5 +380,6 @@ export function useTodos() {
     rescheduleTodos,
     postponeTodo,
     prePostponeTodo,
+    rescheduleRecurring,
   };
 }

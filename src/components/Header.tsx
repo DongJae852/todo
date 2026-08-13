@@ -7,6 +7,7 @@ import {
   DatabaseOutlined,
   SettingOutlined,
   SearchOutlined,
+  MenuOutlined,
 } from '@ant-design/icons';
 import type { Todo } from '../types/todo';
 
@@ -25,6 +26,7 @@ interface HeaderProps {
   onRecurringClick: () => void;
   onBackupClick: () => void;
   onCourseClick: () => void;
+  onMenuClick: () => void;
   isSyncing?: boolean;
   syncError?: string | null;
 }
@@ -41,6 +43,7 @@ const Header: React.FC<HeaderProps> = ({
   onRecurringClick,
   onBackupClick,
   onCourseClick,
+  onMenuClick,
   isSyncing = false,
   syncError = null,
 }) => {
@@ -167,6 +170,18 @@ const Header: React.FC<HeaderProps> = ({
           >
             할 일 추가
           </Button>
+          <Tooltip title="더보기 (변경 이력 · 관리)">
+            <Button
+              icon={<MenuOutlined />}
+              onClick={onMenuClick}
+              className="header-btn"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                borderColor: 'var(--glass-border)',
+                color: 'var(--text-primary)',
+              }}
+            />
+          </Tooltip>
         </Space>
       </div>
     </div>

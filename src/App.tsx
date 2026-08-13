@@ -4,7 +4,7 @@ import koKR from 'antd/locale/ko_KR';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import type { Dayjs } from 'dayjs';
-import type { Todo, CourseTask, CourseDayState, ChecklistItem } from './types/todo';
+import type { Todo, CourseTask, CourseDayState, ChecklistItem, ChangeLogEntry } from './types/todo';
 import { useTodos } from './hooks/useTodos';
 import { useNotification } from './hooks/useNotification';
 import { useHolidays } from './hooks/useHolidays';
@@ -18,13 +18,15 @@ import RecurringManagerModal from './components/RecurringManagerModal';
 import BackupRestoreModal from './components/BackupRestoreModal';
 import CourseManagerModal from './components/CourseManagerModal';
 import CourseTaskEditModal from './components/CourseTaskEditModal';
+import RecurringRescheduleModal from './components/RecurringRescheduleModal';
+import SideDrawer from './components/SideDrawer';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
 
 dayjs.locale('ko');
 
 const App: React.FC = () => {
-  const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo } = useTodos();
+  const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo, rescheduleRecurring } = useTodos();
   const { permission, requestPermission, sendTestNotification, notificationsEnabled, toggleNotifications } = useNotification(todos);
   const { holidays, setHolidays, addHoliday, removeHoliday, isHoliday, getHolidayReason } = useHolidays();
 
@@ -80,6 +82,22 @@ const App: React.FC = () => {
   const [editingCourseTask, setEditingCourseTask] = useState<CourseTask | null>(null);
   const [editingCourseDate, setEditingCourseDate] = useState<string>('');
 
+  // 전역 변경 이력
+  const [changeLogs, setChangeLogs] = useState<ChangeLogEntry[]>(() => {
+    try {
+      const data = localStorage.getItem('dongjae-todo-change-logs');
+      return data ? JSON.parse(data) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // 사이드 드로어 (더보기) 및 반복 요일 변경 모달 상태
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [rescheduleOpen, setRescheduleOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [rescheduleGroup, setRescheduleGroup] = useState<any>(null);
+
   // 반복 일정의 그룹 단위 표시 순서 (groupId -> 순번). 인스턴스마다 sortOrder를 쓰지 않고 그룹 단위로만 저장한다.
   const [recurringGroupOrder, setRecurringGroupOrder] = useState<Record<string, number>>(() => {
     try {
@@ -104,6 +122,8 @@ const App: React.FC = () => {
     setExcludedCourseTasks,
     courseDailyState,
     setCourseDailyState,
+    changeLogs,
+    setChangeLogs,
     recurringGroupOrder,
     setRecurringGroupOrder
   });
@@ -124,6 +144,10 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('dongjae-todo-course-daily-state', JSON.stringify(courseDailyState));
   }, [courseDailyState]);
+
+  useEffect(() => {
+    localStorage.setItem('dongjae-todo-change-logs', JSON.stringify(changeLogs));
+  }, [changeLogs]);
 
   useEffect(() => {
     localStorage.setItem('dongjae-todo-recurring-group-order', JSON.stringify(recurringGroupOrder));
@@ -402,6 +426,51 @@ const App: React.FC = () => {
     }
   }, [toggleComplete, handleToggleCourseTask]);
 
+  // 반복 요일·주기 변경 (과거 보존) + 변경 이력 기록
+  const handleRescheduleConfirm = useCallback((params: {
+    groupId: string;
+    fromDate: string;
+    newAnchor: string;
+    newRecurringType: 'daily' | 'weekly' | 'monthly' | 'custom';
+    newRecurringDays?: number;
+    summary: string;
+    title: string;
+  }) => {
+    rescheduleRecurring({
+      groupId: params.groupId,
+      fromDate: params.fromDate,
+      newAnchor: params.newAnchor,
+      newRecurringType: params.newRecurringType,
+      newRecurringDays: params.newRecurringDays,
+      holidays: holidays.map(h => h.date),
+    });
+    const entry: ChangeLogEntry = {
+      id: uuidv4(),
+      at: dayjs().toISOString(),
+      kind: 'recurring-reschedule',
+      title: params.title,
+      summary: params.summary,
+      effectiveFrom: params.fromDate,
+      detail: `${params.fromDate}부터 적용 · 이전 일정은 단일 일정으로 보존`,
+    };
+    setChangeLogs(prev => [entry, ...prev]);
+    setRescheduleOpen(false);
+    setRescheduleGroup(null);
+  }, [rescheduleRecurring, holidays]);
+
+  const handleRequestReschedule = useCallback((group: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    setRescheduleGroup(group);
+    setRescheduleOpen(true);
+  }, []);
+
+  const handleDeleteLog = useCallback((id: string) => {
+    setChangeLogs(prev => prev.filter(l => l.id !== id));
+  }, []);
+
+  const handleClearLogs = useCallback(() => {
+    setChangeLogs([]);
+  }, []);
+
   const handleDeleteTodo = useCallback((id: string, mode?: 'single' | 'future' | 'all') => {
     if (id.startsWith('course-')) {
       const dateStr = id.slice(-10);
@@ -450,6 +519,7 @@ const App: React.FC = () => {
           onRecurringClick={() => handleOpenRecurringManager()}
           onBackupClick={() => setBackupModalOpen(true)}
           onCourseClick={() => setCourseModalOpen(true)}
+          onMenuClick={() => setDrawerOpen(true)}
           isSyncing={isSyncing}
           syncError={syncError}
         />
@@ -520,6 +590,7 @@ const App: React.FC = () => {
           todos={todos}
           selectedGroupId={selectedRecurringGroupId}
           onJumpToDate={handleJumpToDate}
+          onRequestReschedule={handleRequestReschedule}
         />
 
         <BackupRestoreModal
@@ -551,6 +622,24 @@ const App: React.FC = () => {
           task={editingCourseTask}
           dateStr={editingCourseDate}
           onSave={handleUpdateCourseTask}
+        />
+
+        <RecurringRescheduleModal
+          open={rescheduleOpen}
+          onClose={() => {
+            setRescheduleOpen(false);
+            setRescheduleGroup(null);
+          }}
+          group={rescheduleGroup}
+          onConfirm={handleRescheduleConfirm}
+        />
+
+        <SideDrawer
+          open={drawerOpen}
+          onClose={() => setDrawerOpen(false)}
+          changeLogs={changeLogs}
+          onClearLogs={handleClearLogs}
+          onDeleteLog={handleDeleteLog}
         />
       </div>
     </ConfigProvider>
