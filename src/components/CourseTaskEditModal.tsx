@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Modal, Input, Slider, Button, Typography, Space, message } from 'antd';
-import { PlusOutlined, DeleteOutlined, SettingOutlined } from '@ant-design/icons';
+import { Modal, Input, Slider, Button, Typography, Space, Tooltip, message } from 'antd';
+import { PlusOutlined, DeleteOutlined, SettingOutlined, WarningOutlined, WarningFilled } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import type { CourseTask, ChecklistItem } from '../types/todo';
 import { resolveCourseTask } from '../utils/course';
@@ -63,6 +63,10 @@ const CourseTaskEditModal: React.FC<CourseTaskEditModalProps> = ({ open, onClose
 
   const handleEditItemText = (id: string, text: string) => {
     setChecklist(prev => prev.map(item => (item.id === id ? { ...item, text } : item)));
+  };
+
+  const handleTogglePreStart = (id: string) => {
+    setChecklist(prev => prev.map(item => (item.id === id ? { ...item, preStart: !item.preStart } : item)));
   };
 
   // 저장 클릭 → 적용 범위 선택 모달 오픈
@@ -165,8 +169,17 @@ const CourseTaskEditModal: React.FC<CourseTaskEditModalProps> = ({ open, onClose
                     value={item.text}
                     onChange={(e) => handleEditItemText(item.id, e.target.value)}
                     placeholder="체크 항목 내용"
-                    style={{ flex: 1 }}
+                    style={{ flex: 1, color: item.preStart ? '#fbbf24' : undefined }}
                   />
+                  <Tooltip title={item.preStart ? '시작 전 확인 해제' : '시작 전 확인으로 표시'} mouseEnterDelay={0.3}>
+                    <Button
+                      type="text"
+                      size="small"
+                      icon={item.preStart ? <WarningFilled /> : <WarningOutlined />}
+                      onClick={() => handleTogglePreStart(item.id)}
+                      style={{ color: item.preStart ? '#fbbf24' : 'var(--text-secondary)' }}
+                    />
+                  </Tooltip>
                   <Button
                     type="text"
                     danger

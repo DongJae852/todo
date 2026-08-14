@@ -80,7 +80,7 @@ function isTodoSingleEqual(ta: Todo, tb: Todo): boolean {
   const clB = tb.checklist || [];
   if (clA.length !== clB.length) return false;
   for (let j = 0; j < clA.length; j++) {
-    if (clA[j].id !== clB[j].id || clA[j].text !== clB[j].text || clA[j].completed !== clB[j].completed) {
+    if (clA[j].id !== clB[j].id || clA[j].text !== clB[j].text || clA[j].completed !== clB[j].completed || !!clA[j].preStart !== !!clB[j].preStart) {
       return false;
     }
   }
@@ -104,7 +104,7 @@ function isCourseTaskEqual(a: CourseTask, b: CourseTask): boolean {
   const clB = b.checklist || [];
   if (clA.length !== clB.length) return false;
   for (let i = 0; i < clA.length; i++) {
-    if (clA[i].id !== clB[i].id || clA[i].text !== clB[i].text) return false;
+    if (clA[i].id !== clB[i].id || clA[i].text !== clB[i].text || !!clA[i].preStart !== !!clB[i].preStart) return false;
   }
   // 버전/일자별 오버라이드는 구조가 단순하므로 직렬화 비교
   if (JSON.stringify(a.versions || null) !== JSON.stringify(b.versions || null)) return false;

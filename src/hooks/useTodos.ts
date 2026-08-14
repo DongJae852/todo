@@ -275,9 +275,9 @@ function todoReducer(state: Todo[], action: Action): Todo[] {
         recurringType: newRecurringType,
         recurringDays: newRecurringType === 'custom' ? newRecurringDays : undefined,
         holidayBehavior: template.holidayBehavior || 'next',
-        // 체크리스트는 구조만 복제 (완료상태 초기화)
+        // 체크리스트는 구조만 복제 (완료상태 초기화, 시작 전 확인 플래그는 보존)
         checklist: template.checklist
-          ? template.checklist.map(c => ({ id: c.id, text: c.text, completed: false }))
+          ? template.checklist.map(c => ({ id: c.id, text: c.text, completed: false, ...(c.preStart ? { preStart: true } : {}) }))
           : undefined,
       } as Omit<Todo, 'id' | 'completed' | 'completedAt' | 'createdAt'>;
 

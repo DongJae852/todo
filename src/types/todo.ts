@@ -40,6 +40,7 @@ export interface ChecklistItem {
   id: string;
   text: string;
   completed: boolean;
+  preStart?: boolean; // "시작 전 확인" — 작업 시작 전 인지해야 하는 항목 (상단 강조/배너 노출)
 }
 
 export interface Todo {

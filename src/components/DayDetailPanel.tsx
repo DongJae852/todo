@@ -185,6 +185,17 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   // 3. 일반 완료된 할 일 (isPeriod: false 이면서 completed: true) - 완료 리스트로 격리
   const completedTodos = sortedTodos.filter(t => !t.isPeriod && t.completed);
 
+  // "오늘 시작 전 확인" 브리핑: 미완료 일정의 미완료 preStart 항목을 모은다
+  const preStartBriefing = sortedTodos
+    .filter(t => !t.completed)
+    .map(t => ({
+      taskId: t.id,
+      taskTitle: t.title,
+      items: (t.checklist || []).filter(c => c.preStart && !c.completed),
+    }))
+    .filter(g => g.items.length > 0);
+  const preStartCount = preStartBriefing.reduce((sum, g) => sum + g.items.length, 0);
+
   // 카테고리별 분류 (미완료 대상)
   const todayTodos = activeTodos.filter(t => !t.isRecurring);
   const customTodos = activeTodos.filter(t => t.isRecurring && t.recurringType === 'custom');
@@ -492,6 +503,39 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
       )}
 
       <div className="day-detail-list" style={{ padding: '0 16px 16px 16px', overflowY: 'auto', flex: 1 }}>
+        {/* 오늘 시작 전 확인 브리핑 배너 — 작업 시작 전 인지해야 할 항목을 항상 상단에 노출 */}
+        {preStartCount > 0 && (
+          <div style={{
+            marginBottom: '16px',
+            padding: '12px 14px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, rgba(251,191,36,0.16), rgba(245,158,11,0.07))',
+            border: '1px solid rgba(251,191,36,0.4)',
+            boxShadow: '0 4px 16px rgba(245,158,11,0.12)',
+          }}>
+            <div style={{ fontSize: '12.5px', fontWeight: 800, color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', letterSpacing: '0.02em' }}>
+              <span style={{ fontSize: '15px' }}>⚠️</span> 시작 전 확인 · {preStartCount}건
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {preStartBriefing.map(group => (
+                <div key={group.taskId}>
+                  <div style={{ fontSize: '10.5px', fontWeight: 700, color: 'rgba(253,230,138,0.75)', marginBottom: '2px' }}>
+                    {group.taskTitle}
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: '2px' }}>
+                    {group.items.map(item => (
+                      <div key={item.id} style={{ fontSize: '12.5px', fontWeight: 600, color: '#fde68a', lineHeight: 1.4, display: 'flex', gap: '6px' }}>
+                        <span style={{ color: '#fbbf24' }}>›</span>
+                        <span>{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {totalCount === 0 ? (
           <Empty
             description={
