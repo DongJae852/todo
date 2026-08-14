@@ -6,7 +6,6 @@ import 'dayjs/locale/ko';
 import type { Dayjs } from 'dayjs';
 import type { Todo, CourseTask, CourseDayState, ChecklistItem, ChangeLogEntry } from './types/todo';
 import { useTodos } from './hooks/useTodos';
-import { useNotification } from './hooks/useNotification';
 import { useHolidays } from './hooks/useHolidays';
 import { useFirestoreSync } from './hooks/useFirestoreSync';
 import Header from './components/Header';
@@ -27,7 +26,6 @@ dayjs.locale('ko');
 
 const App: React.FC = () => {
   const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo, rescheduleRecurring } = useTodos();
-  const { permission, requestPermission, sendTestNotification, notificationsEnabled, toggleNotifications } = useNotification(todos);
   const { holidays, setHolidays, addHoliday, removeHoliday, isHoliday, getHolidayReason } = useHolidays();
 
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
@@ -509,11 +507,6 @@ const App: React.FC = () => {
         <Header
           todos={todos}
           onAddClick={handleAddClick}
-          onTestNotification={sendTestNotification}
-          notificationPermission={permission}
-          onRequestPermission={requestPermission}
-          notificationsEnabled={notificationsEnabled}
-          onToggleNotifications={toggleNotifications}
           onHolidayClick={() => setHolidayModalOpen(true)}
           holidayCount={holidays.length}
           onRecurringClick={() => handleOpenRecurringManager()}
