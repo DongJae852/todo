@@ -65,7 +65,7 @@ export function generateNaturalDates(
 // 체크리스트 구조(완료상태 제외) 복제
 function cloneChecklistStructure(checklist?: ChecklistItem[]): ChecklistItem[] | undefined {
   if (!checklist || checklist.length === 0) return undefined;
-  return checklist.map(c => ({ id: c.id, text: c.text, completed: false }));
+  return checklist.map(c => ({ id: c.id, text: c.text, completed: false, ...(c.preStart ? { preStart: true } : {}) }));
 }
 
 // 그룹 규칙 + override를 실제 Todo 인스턴스 배열로 펼친다(materialize).
@@ -138,7 +138,7 @@ function checklistStructureEqual(a?: ChecklistItem[], b?: ChecklistItem[]): bool
   const y = b || [];
   if (x.length !== y.length) return false;
   for (let i = 0; i < x.length; i++) {
-    if (x[i].id !== y[i].id || x[i].text !== y[i].text) return false;
+    if (x[i].id !== y[i].id || x[i].text !== y[i].text || !!x[i].preStart !== !!y[i].preStart) return false;
   }
   return true;
 }
@@ -160,7 +160,7 @@ export function deriveGroup(instances: Todo[], holidays: string[]): RecurringGro
   const recurringType = instances[0].recurringType;
   const recurringDays = instances[0].recurringDays;
   const holidayBehavior = instances[0].holidayBehavior;
-  const checklistSrc = mostCommon(instances, t => JSON.stringify((t.checklist || []).map(c => ({ id: c.id, text: c.text }))));
+  const checklistSrc = mostCommon(instances, t => JSON.stringify((t.checklist || []).map(c => ({ id: c.id, text: c.text, preStart: !!c.preStart }))));
   const checklistStructure = cloneChecklistStructure(checklistSrc.checklist);
 
   const anchorDate = instances.reduce((min, t) => (t.dueDate < min ? t.dueDate : min), instances[0].dueDate);

@@ -52,6 +52,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const daysLeft = dayjs(todo.dueDate).diff(dayjs().startOf('day'), 'day');
   const [dailyNoteText, setDailyNoteText] = useState(todo.dailyNote || '');
 
+  // 세부 항목을 "시작 전 확인"과 일반으로 분리
+  const preStartItems = (todo.checklist || []).filter(c => c.preStart);
+  const normalItems = (todo.checklist || []).filter(c => !c.preStart);
+
   // 외부(예: 복원 또는 모달 수정)에서 dailyNote가 바뀔 때 상태 동기화
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -113,6 +117,42 @@ const TodoItem: React.FC<TodoItemProps> = ({
       size="small"
       {...dragProps}
     >
+      {/* 시작 전 확인 콜아웃 — 작업 시작 전 인지해야 하는 항목을 카드 최상단에 강조 */}
+      {!todo.completed && preStartItems.length > 0 && (
+        <div style={{
+          marginBottom: '10px',
+          padding: '8px 10px',
+          borderRadius: '8px',
+          background: 'linear-gradient(135deg, rgba(251,191,36,0.14), rgba(245,158,11,0.08))',
+          border: '1px solid rgba(251,191,36,0.35)',
+          boxShadow: '0 0 0 1px rgba(251,191,36,0.05), 0 2px 8px rgba(245,158,11,0.12)',
+        }}>
+          <div style={{ fontSize: '11px', fontWeight: 800, color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '13px' }}>⚠️</span> 시작 전 확인
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            {preStartItems.map(item => (
+              <div key={item.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+                <Checkbox
+                  checked={item.completed}
+                  onChange={(e) => handleToggleCheckItem(item.id, e.target.checked)}
+                  style={{ marginTop: '1px' }}
+                />
+                <span style={{
+                  fontSize: '12.5px',
+                  fontWeight: 600,
+                  lineHeight: 1.4,
+                  color: item.completed ? 'var(--text-secondary)' : '#fde68a',
+                  textDecoration: item.completed ? 'line-through' : 'none',
+                }}>
+                  {item.text}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="todo-item-content">
         <div className="todo-item-left">
           <Checkbox
@@ -328,8 +368,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
           flexDirection: 'column',
           gap: '10px'
         }}>
-          {/* 1. 세부 체크리스트 */}
-          {todo.checklist && todo.checklist.length > 0 && (
+          {/* 1. 세부 체크리스트 (시작 전 확인 항목은 상단 콜아웃에서 처리하므로, 활성 상태에선 일반 항목만) */}
+          {todo.checklist && todo.checklist.length > 0 && (todo.completed ? todo.checklist : normalItems).length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div style={{ fontSize: '11px', fontWeight: 'bold', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 📋 세부 항목 완료 현황:
@@ -338,7 +378,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
                 </span>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingLeft: '4px' }}>
-                {todo.checklist.map(item => (
+                {(todo.completed ? todo.checklist : normalItems).map(item => (
                   <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Checkbox
                       checked={item.completed}

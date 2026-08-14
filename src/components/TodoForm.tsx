@@ -12,8 +12,9 @@ import {
   Space,
   Row,
   Col,
+  Tooltip,
 } from 'antd';
-import { DeleteOutlined, HolderOutlined } from '@ant-design/icons';
+import { DeleteOutlined, HolderOutlined, WarningOutlined, WarningFilled } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
@@ -103,6 +104,11 @@ const TodoForm: React.FC<TodoFormProps> = ({
   // 세부 항목 텍스트 인라인 수정
   const handleEditCheckItem = (itemId: string, text: string) => {
     setChecklist(prev => prev.map(item => (item.id === itemId ? { ...item, text } : item)));
+  };
+
+  // "시작 전 확인" 플래그 토글
+  const handleTogglePreStart = (itemId: string) => {
+    setChecklist(prev => prev.map(item => (item.id === itemId ? { ...item, preStart: !item.preStart } : item)));
   };
 
   // 세부 항목 드래그 순서변경 (핸들에서만 드래그, 데스크탑 HTML5 + 모바일 터치)
@@ -281,8 +287,11 @@ const TodoForm: React.FC<TodoFormProps> = ({
               borderRadius: '12px', 
               padding: '16px' 
             }}>
-              <div style={{ marginBottom: '12px', fontWeight: 'bold', fontSize: '13px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ marginBottom: '4px', fontWeight: 'bold', fontSize: '13px', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 📋 세부 체크리스트 (선택)
+              </div>
+              <div style={{ marginBottom: '12px', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                ⚠️ 아이콘을 켜면 <span style={{ color: '#fbbf24' }}>"시작 전 확인"</span> 항목이 되어 카드 상단·오늘 브리핑에 강조됩니다.
               </div>
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
@@ -337,8 +346,17 @@ const TodoForm: React.FC<TodoFormProps> = ({
                       onChange={(e) => handleEditCheckItem(item.id, e.target.value)}
                       maxLength={80}
                       variant="borderless"
-                      style={{ flex: 1, fontSize: '12px', color: 'var(--text-primary)', padding: '0 4px' }}
+                      style={{ flex: 1, fontSize: '12px', color: item.preStart ? '#fbbf24' : 'var(--text-primary)', padding: '0 4px' }}
                     />
+                    <Tooltip title={item.preStart ? '시작 전 확인 해제' : '시작 전 확인으로 표시 (상단에 강조)'} mouseEnterDelay={0.3}>
+                      <Button
+                        type="text"
+                        size="small"
+                        icon={item.preStart ? <WarningFilled /> : <WarningOutlined />}
+                        onClick={() => handleTogglePreStart(item.id)}
+                        style={{ padding: '0 4px', minWidth: 'auto', color: item.preStart ? '#fbbf24' : 'var(--text-secondary)' }}
+                      />
+                    </Tooltip>
                     <Button
                       type="text"
                       danger
