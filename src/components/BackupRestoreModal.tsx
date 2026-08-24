@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Modal, Button, Space, Typography, message, Alert, Card } from 'antd';
 import {
   DownloadOutlined,
   DatabaseOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
 import type { Todo, Holiday, CourseTask, CourseDayState } from '../types/todo';
 
@@ -41,6 +42,63 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
   const [hasCustomSnapshot, setHasCustomSnapshot] = useState(
     () => !!localStorage.getItem('todo_app_user_custom_snapshot')
   );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 백업 JSON 파일에서 복원
+  const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(String(ev.target?.result || ''));
+        if (!data || !Array.isArray(data.todos)) {
+          message.error('유효한 백업 파일이 아닙니다. (todos 목록이 없습니다)');
+          return;
+        }
+        const importedTodos = data.todos || [];
+        const importedHolidays = data.holidays || [];
+        const importedCourseTasks = data.courseTasks || [];
+        const importedCourseCompletions = data.completedCourseTasks || {};
+        const importedCourseExclusions = data.excludedCourseTasks || {};
+        const importedCourseDailyState = data.courseDailyState || {};
+        Modal.confirm({
+          title: '백업 파일로 복원',
+          content: (
+            <div style={{ marginTop: 8 }}>
+              <p>이 파일의 데이터로 <strong>현재 데이터를 완전히 대체</strong>합니다.</p>
+              <p style={{ fontSize: 12, color: '#8c8c8c' }}>
+                할 일 <strong>{importedTodos.length}</strong>개 · 휴일 <strong>{importedHolidays.length}</strong>개 · 코스 <strong>{importedCourseTasks.length}</strong>개
+              </p>
+              <p style={{ color: '#faad14', fontSize: 12, marginTop: 8 }}>
+                ⚠️ 되돌리려면 먼저 현재 상태를 백업 다운로드 해두세요.
+              </p>
+            </div>
+          ),
+          okText: '복원 실행',
+          cancelText: '취소',
+          okButtonProps: { danger: true },
+          onOk: () => {
+            onImportBackup(
+              importedTodos,
+              importedHolidays,
+              importedCourseTasks,
+              importedCourseCompletions,
+              importedCourseExclusions,
+              importedCourseDailyState
+            );
+            message.success(`복원 완료! 할 일 ${importedTodos.length}개 · 휴일 ${importedHolidays.length}개`);
+            onClose();
+          },
+        });
+      } catch {
+        message.error('백업 파일을 읽는 중 오류가 발생했습니다. (JSON 형식 확인)');
+      } finally {
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+    reader.readAsText(file);
+  };
 
   // 1. JSON 파일로 백업 내보내기
   const handleExport = () => {
@@ -217,9 +275,30 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
           <Button
             icon={<DownloadOutlined />}
             onClick={handleExport}
-            style={{ width: '100%', borderColor: 'rgba(255,255,255,0.15)', color: 'var(--text-primary)' }}
+            style={{ width: '100%', borderColor: 'rgba(255,255,255,0.15)', color: 'var(--text-primary)', marginBottom: '10px' }}
           >
             백업 파일 다운로드
+          </Button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={handleImportFile}
+            style={{ display: 'none' }}
+          />
+          <Button
+            icon={<UploadOutlined />}
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              width: '100%',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(6, 182, 212, 0.15))',
+              borderColor: 'rgba(139, 92, 246, 0.4)',
+              color: '#c4b5fd',
+              fontWeight: 'bold',
+            }}
+          >
+            📂 백업 파일에서 복원 (파일 불러오기)
           </Button>
         </Card>
 
