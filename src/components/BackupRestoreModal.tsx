@@ -150,38 +150,73 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
     }
   };
 
-  // 3. 나의 커스텀 스냅샷 복원
+  // 3. 나의 커스텀 스냅샷 복원 (⚠️ 실행 전 경고 확인창)
   const handleRestoreCustomSnapshot = () => {
+    let data: {
+      todos?: Todo[];
+      holidays?: Holiday[];
+      courseTasks?: CourseTask[];
+      completedCourseTasks?: Record<string, boolean>;
+      excludedCourseTasks?: Record<string, boolean>;
+      courseDailyState?: Record<string, CourseDayState>;
+      savedAt?: string;
+    };
     try {
       const raw = localStorage.getItem('todo_app_user_custom_snapshot');
       if (!raw) {
         message.error('저장된 로컬 스냅샷이 없습니다.');
         return;
       }
-      const data = JSON.parse(raw);
-      if (data && (Array.isArray(data.todos) || data.todos)) {
-        const importedTodos = data.todos || [];
-        const importedHolidays = data.holidays || [];
-        const importedCourseTasks = data.courseTasks || [];
-        const importedCourseCompletions = data.completedCourseTasks || {};
-        const importedCourseExclusions = data.excludedCourseTasks || {};
-        const importedCourseDailyState = data.courseDailyState || {};
+      data = JSON.parse(raw);
+      if (!data || !(Array.isArray(data.todos) || data.todos)) {
+        message.error('유효하지 않은 스냅샷 데이터 형식입니다.');
+        return;
+      }
+    } catch {
+      message.error('스냅샷을 읽는 도중 오류가 발생했습니다.');
+      return;
+    }
+
+    const importedTodos = data.todos || [];
+    const importedHolidays = data.holidays || [];
+    const savedAt = data.savedAt ? new Date(data.savedAt).toLocaleString('ko-KR') : '알 수 없음';
+
+    Modal.confirm({
+      title: (
+        <span style={{ color: '#faad14', fontWeight: 'bold' }}>⚠️ 로컬 스냅샷으로 복원</span>
+      ),
+      content: (
+        <div style={{ marginTop: 8 }}>
+          <p>
+            저장 시점: <strong>{savedAt}</strong>
+          </p>
+          <p style={{ fontSize: 12, color: '#8c8c8c' }}>
+            할 일 <strong>{importedTodos.length}</strong>개 · 휴일 <strong>{importedHolidays.length}</strong>개
+          </p>
+          <p style={{ color: '#ff4d4f', fontWeight: 500, marginTop: 10 }}>
+            현재 데이터가 이 스냅샷 시점으로 <strong>완전히 대체</strong>되며 되돌릴 수 없습니다.
+          </p>
+          <p style={{ fontSize: 12, marginTop: 6 }}>
+            지금 데이터가 더 최신이라면, 먼저 <strong>백업 파일 다운로드</strong>를 받아두세요.
+          </p>
+        </div>
+      ),
+      okText: '복원 실행',
+      cancelText: '취소',
+      okButtonProps: { danger: true },
+      onOk: () => {
         onImportBackup(
           importedTodos,
           importedHolidays,
-          importedCourseTasks,
-          importedCourseCompletions,
-          importedCourseExclusions,
-          importedCourseDailyState
+          data.courseTasks || [],
+          data.completedCourseTasks || {},
+          data.excludedCourseTasks || {},
+          data.courseDailyState || {}
         );
-        message.success(`🎉 저장해 두신 커스텀 스냅샷으로 성공적으로 복원되었습니다! (할 일 ${importedTodos.length}개, 휴일 ${importedHolidays.length}개)`);
+        message.success(`🎉 로컬 스냅샷으로 복원되었습니다! (할 일 ${importedTodos.length}개, 휴일 ${importedHolidays.length}개)`);
         onClose();
-      } else {
-        message.error('유효하지 않은 스냅샷 데이터 형식입니다.');
-      }
-    } catch {
-      message.error('스냅샷 복원 도중 오류가 발생했습니다.');
-    }
+      },
+    });
   };
 
   return (
