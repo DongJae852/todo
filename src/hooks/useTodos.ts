@@ -192,8 +192,33 @@ function todoReducer(state: Todo[], action: Action): Todo[] {
         // 가장 이른 미완료 날짜 찾기
         const sortedTasks = [...groupTasks].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
         const earliestTask = sortedTasks[0];
- 
-        const newInstances = generateRecurringInstances(earliestTask, groupId, holidays);
+
+        // ⚠️ 요일 드리프트 방지: 주별 반복은 "가장 이른 미완료 날짜"가 휴일로 밀려있으면
+        // 그 밀린 요일이 새 기준으로 굳어버린다. 완료·미완료 전체 인스턴스의 최빈 요일(원래 요일)로
+        // 앵커를 되돌려서, 휴일 시프트가 반복 요일 자체를 바꾸지 못하게 한다.
+        let anchorTask = earliestTask;
+        if (earliestTask.recurringType === 'weekly') {
+          const allGroupInsts = [
+            ...completedTodos.filter(t => t.recurringGroupId === groupId),
+            ...groupTasks,
+          ];
+          const dowCount: Record<number, number> = {};
+          for (const t of allGroupInsts) {
+            const w = dayjs(t.dueDate).day();
+            dowCount[w] = (dowCount[w] || 0) + 1;
+          }
+          const intendedDow = Number(
+            Object.entries(dowCount).sort((a, b) => b[1] - a[1])[0][0]
+          );
+          // 앵커를 원래 요일로 최대 6일 당겨 정렬 (그 주가 휴일이면 generateRecurringInstances가 다시 시프트함)
+          let anchor = dayjs(earliestTask.dueDate);
+          for (let i = 0; i < 6 && anchor.day() !== intendedDow; i++) {
+            anchor = anchor.subtract(1, 'day');
+          }
+          anchorTask = { ...earliestTask, dueDate: anchor.format('YYYY-MM-DD') };
+        }
+
+        const newInstances = generateRecurringInstances(anchorTask, groupId, holidays);
         
         // 기완료된 인스턴스가 있는 날짜는 제외하여 필터링
         const completedDatesForGroup = completedTodos
