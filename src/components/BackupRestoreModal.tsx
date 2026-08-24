@@ -1,11 +1,12 @@
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { Modal, Button, Space, Typography, message, Alert, Card } from 'antd';
 import {
   DownloadOutlined,
   DatabaseOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
-import type { Todo, Holiday, CourseTask, CourseDayState } from '../types/todo';
+import type { Todo, Holiday, CourseTask, CourseDayState, RecurringGroupDoc } from '../types/todo';
+import { materializeAll } from '../utils/recurringEngine';
 
 const { Text, Paragraph, Title } = Typography;
 
@@ -39,29 +40,75 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
   courseDailyState,
   onImportBackup,
 }) => {
-  const [hasCustomSnapshot, setHasCustomSnapshot] = useState(
-    () => !!localStorage.getItem('todo_app_user_custom_snapshot')
-  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 백업 JSON 파일에서 복원
+  // 두 가지 백업 형식을 모두 지원해 표준 형태로 변환
+  //  (A) 앱 내보내기: { todos: [...], holidays: [...], ... }
+  //  (B) 깃허브 자동백업(Firestore 덤프): { todos: {id:doc}, recurringGroups: {id:group}, holidays: {date:doc}, appState: {metadata:{...}} }
+  const normalizeBackup = (data: any): {
+    todos: Todo[]; holidays: Holiday[]; courseTasks: CourseTask[];
+    completedCourseTasks: Record<string, boolean>; excludedCourseTasks: Record<string, boolean>;
+    courseDailyState: Record<string, CourseDayState>;
+  } | null => {
+    if (!data || typeof data !== 'object') return null;
+
+    // (A) 앱 내보내기 형식
+    if (Array.isArray(data.todos)) {
+      return {
+        todos: data.todos,
+        holidays: data.holidays || [],
+        courseTasks: data.courseTasks || [],
+        completedCourseTasks: data.completedCourseTasks || {},
+        excludedCourseTasks: data.excludedCourseTasks || {},
+        courseDailyState: data.courseDailyState || {},
+      };
+    }
+
+    // (B) Firestore 덤프 형식 (깃허브 자동백업)
+    if (data.todos && typeof data.todos === 'object') {
+      const todoDocs: Todo[] = Object.values(data.todos);
+      const holidays: Holiday[] = Object.values(data.holidays || {});
+      const holidayDates = holidays.map(h => h.date);
+      const groups: RecurringGroupDoc[] = Object.values(data.recurringGroups || {});
+      const groupIds = new Set(groups.map(g => g.groupId));
+
+      const singles = todoDocs.filter(t => !(t.isRecurring && t.recurringGroupId));
+      const legacyRecurring = todoDocs.filter(t => t.isRecurring && t.recurringGroupId && !groupIds.has(t.recurringGroupId!));
+      const recurring = [...materializeAll(groups, holidayDates), ...legacyRecurring];
+
+      const meta = (data.appState && data.appState.metadata) || {};
+      return {
+        todos: [...singles, ...recurring],
+        holidays,
+        courseTasks: Object.values(data.courseTasks || {}),
+        completedCourseTasks: meta.completedCourseTasks || {},
+        excludedCourseTasks: meta.excludedCourseTasks || {},
+        courseDailyState: meta.courseDailyState || {},
+      };
+    }
+
+    return null;
+  };
+
+  // 백업 JSON 파일에서 복원 (앱 백업 / 깃허브 자동백업 둘 다 지원)
   const handleImportFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (ev) => {
       try {
-        const data = JSON.parse(String(ev.target?.result || ''));
-        if (!data || !Array.isArray(data.todos)) {
-          message.error('유효한 백업 파일이 아닙니다. (todos 목록이 없습니다)');
+        const raw = JSON.parse(String(ev.target?.result || ''));
+        const norm = normalizeBackup(raw);
+        if (!norm) {
+          message.error('유효한 백업 파일이 아닙니다. (앱 백업 또는 Firestore 덤프 형식만 지원)');
           return;
         }
-        const importedTodos = data.todos || [];
-        const importedHolidays = data.holidays || [];
-        const importedCourseTasks = data.courseTasks || [];
-        const importedCourseCompletions = data.completedCourseTasks || {};
-        const importedCourseExclusions = data.excludedCourseTasks || {};
-        const importedCourseDailyState = data.courseDailyState || {};
+        const importedTodos = norm.todos;
+        const importedHolidays = norm.holidays;
+        const importedCourseTasks = norm.courseTasks;
+        const importedCourseCompletions = norm.completedCourseTasks;
+        const importedCourseExclusions = norm.excludedCourseTasks;
+        const importedCourseDailyState = norm.courseDailyState;
         Modal.confirm({
           title: '백업 파일로 복원',
           content: (
@@ -130,95 +177,6 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
     }
   };
 
-  // 2. 나의 현재 데이터 스냅샷 저장 (localStorage)
-  const handleSaveCustomSnapshot = () => {
-    try {
-      const snapshotData = {
-        todos,
-        holidays,
-        courseTasks,
-        completedCourseTasks,
-        excludedCourseTasks,
-        courseDailyState,
-        savedAt: new Date().toISOString(),
-      };
-      localStorage.setItem('todo_app_user_custom_snapshot', JSON.stringify(snapshotData));
-      setHasCustomSnapshot(true);
-      message.success('🎉 현재 작업 중인 모든 데이터가 로컬 스냅샷(스토리지)에 안전하게 박제되었습니다!');
-    } catch {
-      message.error('로컬 스냅샷 저장에 실패했습니다.');
-    }
-  };
-
-  // 3. 나의 커스텀 스냅샷 복원 (⚠️ 실행 전 경고 확인창)
-  const handleRestoreCustomSnapshot = () => {
-    let data: {
-      todos?: Todo[];
-      holidays?: Holiday[];
-      courseTasks?: CourseTask[];
-      completedCourseTasks?: Record<string, boolean>;
-      excludedCourseTasks?: Record<string, boolean>;
-      courseDailyState?: Record<string, CourseDayState>;
-      savedAt?: string;
-    };
-    try {
-      const raw = localStorage.getItem('todo_app_user_custom_snapshot');
-      if (!raw) {
-        message.error('저장된 로컬 스냅샷이 없습니다.');
-        return;
-      }
-      data = JSON.parse(raw);
-      if (!data || !(Array.isArray(data.todos) || data.todos)) {
-        message.error('유효하지 않은 스냅샷 데이터 형식입니다.');
-        return;
-      }
-    } catch {
-      message.error('스냅샷을 읽는 도중 오류가 발생했습니다.');
-      return;
-    }
-
-    const importedTodos = data.todos || [];
-    const importedHolidays = data.holidays || [];
-    const savedAt = data.savedAt ? new Date(data.savedAt).toLocaleString('ko-KR') : '알 수 없음';
-
-    Modal.confirm({
-      title: (
-        <span style={{ color: '#faad14', fontWeight: 'bold' }}>⚠️ 로컬 스냅샷으로 복원</span>
-      ),
-      content: (
-        <div style={{ marginTop: 8 }}>
-          <p>
-            저장 시점: <strong>{savedAt}</strong>
-          </p>
-          <p style={{ fontSize: 12, color: '#8c8c8c' }}>
-            할 일 <strong>{importedTodos.length}</strong>개 · 휴일 <strong>{importedHolidays.length}</strong>개
-          </p>
-          <p style={{ color: '#ff4d4f', fontWeight: 500, marginTop: 10 }}>
-            현재 데이터가 이 스냅샷 시점으로 <strong>완전히 대체</strong>되며 되돌릴 수 없습니다.
-          </p>
-          <p style={{ fontSize: 12, marginTop: 6 }}>
-            지금 데이터가 더 최신이라면, 먼저 <strong>백업 파일 다운로드</strong>를 받아두세요.
-          </p>
-        </div>
-      ),
-      okText: '복원 실행',
-      cancelText: '취소',
-      okButtonProps: { danger: true },
-      onOk: () => {
-        onImportBackup(
-          importedTodos,
-          importedHolidays,
-          data.courseTasks || [],
-          data.completedCourseTasks || {},
-          data.excludedCourseTasks || {},
-          data.courseDailyState || {}
-        );
-        message.success(`🎉 로컬 스냅샷으로 복원되었습니다! (할 일 ${importedTodos.length}개, 휴일 ${importedHolidays.length}개)`);
-        onClose();
-      },
-    });
-  };
-
   return (
     <Modal
       title={
@@ -239,62 +197,28 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
           작성하신 할 일 데이터와 휴일 설정을 안전하게 보관하거나, 이전 백업 파일을 복원할 수 있습니다.
         </Paragraph>
 
-        {/* 사용자 커스텀 로컬 스냅샷 섹션 */}
+        {/* 자동 백업 안내 */}
         <Card
           style={{
-            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(6, 182, 212, 0.15))',
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.12))',
             borderColor: 'rgba(16, 185, 129, 0.3)',
             borderRadius: '12px',
             marginBottom: '20px',
-            boxShadow: '0 4px 15px rgba(16, 185, 129, 0.05)',
           }}
           bodyStyle={{ padding: '16px' }}
         >
           <Space direction="vertical" style={{ width: '100%' }} size="small">
             <Title level={5} style={{ margin: 0, color: '#d1fae5', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              💾 나의 실무 데이터 스냅샷 저장
+              ☁️ 매일 자동 백업 중
             </Title>
             <Text style={{ color: '#a7f3d0', fontSize: '12px' }}>
-              현재 브라우저에 등록한 소중한 할 일 및 메모 전체({todos.length}개)를 임시 스냅샷으로 백업해둡니다.
+              데이터는 <strong>매일 새벽(KST) GitHub Actions</strong>가 Firestore 전체를 자동 백업합니다
+              (<code>backups</code> 브랜치, 최근 3일치 보관). 따로 저장 안 해도 안전해요.
             </Text>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginTop: '8px' }}>
-              <Button
-                type="primary"
-                onClick={handleSaveCustomSnapshot}
-                style={{
-                  background: 'linear-gradient(135deg, #10b981, #06b6d4)',
-                  border: 'none',
-                  fontWeight: 'bold',
-                  height: '38px',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                }}
-              >
-                📸 현재 상태 스냅샷 저장
-              </Button>
-              <Button
-                disabled={!hasCustomSnapshot}
-                onClick={handleRestoreCustomSnapshot}
-                style={{
-                  background: hasCustomSnapshot
-                    ? 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(255, 255, 255, 0.02)',
-                  borderColor: hasCustomSnapshot
-                    ? 'rgba(16, 185, 129, 0.5)'
-                    : 'var(--glass-border)',
-                  color: hasCustomSnapshot ? '#34d399' : 'var(--text-muted)',
-                  fontWeight: 'bold',
-                  height: '38px',
-                }}
-              >
-                🔄 내 스냅샷으로 즉시 복원
-              </Button>
-            </div>
-            {hasCustomSnapshot && (
-              <Text style={{ fontSize: '11px', color: 'var(--text-secondary)', textAlign: 'center', display: 'block', marginTop: '4px' }}>
-                * 이미 생성해 두신 로컬 스냅샷이 있습니다. 언제든 이 스냅샷으로 덮어쓸 수 있습니다.
-              </Text>
-            )}
+            <Text style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>
+              복구가 필요하면 → GitHub <code>backups</code> 브랜치의 <code>db-날짜.json</code>을 받아
+              아래 <strong>📂 백업 파일에서 복원</strong>으로 불러오면 됩니다. (자동백업·앱백업 파일 둘 다 지원)
+            </Text>
           </Space>
         </Card>
 
@@ -340,7 +264,7 @@ const BackupRestoreModal: React.FC<BackupRestoreModalProps> = ({
         <Alert
           message={
             <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)' }}>
-              ⚠️ 스냅샷 복원 시 현재 브라우저의 할 일 데이터는 스냅샷 시점으로 완전히 대체됩니다. 중요한 변경사항이 있다면 먼저 백업 파일을 다운로드받아 두세요.
+              ⚠️ 파일에서 복원 시 현재 데이터는 그 파일 시점으로 완전히 대체됩니다. 중요한 변경사항이 있다면 먼저 백업 파일을 다운로드받아 두세요.
             </span>
           }
           type="warning"
