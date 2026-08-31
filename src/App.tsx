@@ -25,7 +25,7 @@ import './App.css';
 dayjs.locale('ko');
 
 const App: React.FC = () => {
-  const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo, rescheduleRecurring } = useTodos();
+  const { todos, setTodos, addTodo, updateTodo, deleteTodo, toggleComplete, reorderTodos, rescheduleTodos, postponeTodo, prePostponeTodo, moveTodoToDate, rescheduleRecurring } = useTodos();
   const { holidays, setHolidays, addHoliday, removeHoliday, isHoliday, getHolidayReason } = useHolidays();
 
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
@@ -550,6 +550,7 @@ const App: React.FC = () => {
               onOpenRecurringManager={handleOpenRecurringManager}
               onPostponeTodo={(id) => postponeTodo(id, holidays.map(h => h.date))}
               onPrePostponeTodo={(id) => prePostponeTodo(id, holidays.map(h => h.date))}
+              onMoveTodoToDate={moveTodoToDate}
               courseTasks={courseTasks}
               completedCourseTasks={completedCourseTasks}
               excludedCourseTasks={excludedCourseTasks}

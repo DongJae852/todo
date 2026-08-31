@@ -26,6 +26,7 @@ interface DayDetailPanelProps {
   onOpenRecurringManager?: (groupId: string) => void;
   onPostponeTodo?: (id: string) => void;
   onPrePostponeTodo?: (id: string) => void;
+  onMoveTodoToDate?: (id: string, targetDate: string) => void;
   courseTasks: CourseTask[];
   completedCourseTasks: Record<string, boolean>;
   excludedCourseTasks: Record<string, boolean>;
@@ -57,6 +58,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
   onOpenRecurringManager,
   onPostponeTodo,
   onPrePostponeTodo,
+  onMoveTodoToDate,
   courseTasks,
   completedCourseTasks,
   excludedCourseTasks,
@@ -578,6 +580,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                       onUpdateDirectly={onUpdateDirectly}
                       onPostponeTodo={onPostponeTodo}
                       onPrePostponeTodo={onPrePostponeTodo}
+                      onMoveTodoToDate={onMoveTodoToDate}
                     />
                   ))}
                 </div>
@@ -618,6 +621,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
+                          onMoveTodoToDate={onMoveTodoToDate}
                           dragProps={buildDragProps(idx, 'today', displayTodayTodos)}
                           reorderHandleProps={buildHandleProps(idx, 'today', displayTodayTodos)}
                         />
@@ -648,6 +652,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
+                          onMoveTodoToDate={onMoveTodoToDate}
                           dragProps={buildDragProps(idx, 'custom', displayCustomTodos)}
                           reorderHandleProps={buildHandleProps(idx, 'custom', displayCustomTodos)}
                         />
@@ -678,6 +683,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
+                          onMoveTodoToDate={onMoveTodoToDate}
                           dragProps={buildDragProps(idx, 'daily', displayDailyTodos)}
                           reorderHandleProps={buildHandleProps(idx, 'daily', displayDailyTodos)}
                         />
@@ -708,6 +714,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
+                          onMoveTodoToDate={onMoveTodoToDate}
                           dragProps={buildDragProps(idx, 'weekly', displayWeeklyTodos)}
                           reorderHandleProps={buildHandleProps(idx, 'weekly', displayWeeklyTodos)}
                         />
@@ -738,6 +745,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                           onOpenRecurringManager={onOpenRecurringManager}
                           onPostponeTodo={onPostponeTodo}
                           onPrePostponeTodo={onPrePostponeTodo}
+                          onMoveTodoToDate={onMoveTodoToDate}
                           dragProps={buildDragProps(idx, 'monthly', displayMonthlyTodos)}
                           reorderHandleProps={buildHandleProps(idx, 'monthly', displayMonthlyTodos)}
                         />
@@ -776,6 +784,7 @@ const DayDetailPanel: React.FC<DayDetailPanelProps> = ({
                       onOpenRecurringManager={onOpenRecurringManager}
                       onPostponeTodo={onPostponeTodo}
                       onPrePostponeTodo={onPrePostponeTodo}
+                      onMoveTodoToDate={onMoveTodoToDate}
                     />
                   ))}
                 </div>

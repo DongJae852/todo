@@ -22,6 +22,7 @@ type Action =
   | { type: 'RESCHEDULE_TODOS'; payload: { holidays: string[] } }
   | { type: 'POSTPONE_TODO'; payload: { id: string; holidays: string[] } }
   | { type: 'PREV_POSTPONE_TODO'; payload: { id: string; holidays: string[] } }
+  | { type: 'MOVE_TODO_TO_DATE'; payload: { id: string; targetDate: string } }
   | {
       type: 'RESCHEDULE_RECURRING';
       payload: {
@@ -269,6 +270,18 @@ function todoReducer(state: Todo[], action: Action): Todo[] {
         return todo;
       });
     }
+    case 'MOVE_TODO_TO_DATE': {
+      const { id, targetDate } = action.payload;
+      return state.map(todo => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            dueDate: targetDate,
+          };
+        }
+        return todo;
+      });
+    }
     case 'RESCHEDULE_RECURRING': {
       const { groupId, fromDate, newAnchor, newRecurringType, newRecurringDays, holidays } = action.payload;
       const groupInsts = state.filter(t => t.recurringGroupId === groupId);
@@ -379,6 +392,10 @@ export function useTodos() {
     dispatch({ type: 'PREV_POSTPONE_TODO', payload: { id, holidays: holidaysList } });
   }, []);
 
+  const moveTodoToDate = useCallback((id: string, targetDate: string) => {
+    dispatch({ type: 'MOVE_TODO_TO_DATE', payload: { id, targetDate } });
+  }, []);
+
   const rescheduleRecurring = useCallback((params: {
     groupId: string;
     fromDate: string;
@@ -405,6 +422,7 @@ export function useTodos() {
     rescheduleTodos,
     postponeTodo,
     prePostponeTodo,
+    moveTodoToDate,
     rescheduleRecurring,
   };
 }
