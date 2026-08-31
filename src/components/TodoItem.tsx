@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, Checkbox, Tag, Typography, Tooltip, Popconfirm, Button, Progress, Space, Input, message } from 'antd';
-import { EditOutlined, DeleteOutlined, RedoOutlined, SyncOutlined, ForwardOutlined, BackwardOutlined, HolderOutlined } from '@ant-design/icons';
+import { Card, Checkbox, Tag, Typography, Tooltip, Popconfirm, Button, Progress, Space, Input, message, Popover, DatePicker } from 'antd';
+import { EditOutlined, DeleteOutlined, RedoOutlined, SyncOutlined, ForwardOutlined, BackwardOutlined, HolderOutlined, CalendarOutlined } from '@ant-design/icons';
 import type { TodoWithPriority } from '../types/todo';
 import type { Todo } from '../types/todo';
 import dayjs from 'dayjs';
@@ -19,6 +19,7 @@ interface TodoItemProps {
   onOpenRecurringManager?: (groupId: string) => void;
   onPostponeTodo?: (id: string) => void;
   onPrePostponeTodo?: (id: string) => void;
+  onMoveTodoToDate?: (id: string, targetDate: string) => void;
 }
 
 const recurringLabels: Record<string, string> = {
@@ -48,9 +49,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
   onOpenRecurringManager,
   onPostponeTodo,
   onPrePostponeTodo,
+  onMoveTodoToDate,
 }) => {
   const daysLeft = dayjs(todo.dueDate).diff(dayjs().startOf('day'), 'day');
   const [dailyNoteText, setDailyNoteText] = useState(todo.dailyNote || '');
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   // 세부 항목을 "시작 전 확인"과 일반으로 분리
   const preStartItems = (todo.checklist || []).filter(c => c.preStart);
@@ -299,6 +302,40 @@ const TodoItem: React.FC<TodoItemProps> = ({
                   style={{ color: '#a78bfa', padding: '0 4px' }}
                 />
               </Popconfirm>
+            )}
+
+            {onMoveTodoToDate && !todo.completed && !todo.isCourseTask && (
+              <Popover
+                content={
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '4px' }}>
+                    <span style={{ fontSize: '12px', fontWeight: 600, color: '#e2e8f0' }}>이동할 날짜 선택 (주말/휴일 포함)</span>
+                    <DatePicker
+                      size="small"
+                      defaultValue={dayjs(todo.dueDate)}
+                      onChange={(date) => {
+                        if (date) {
+                          onMoveTodoToDate(todo.id, date.format('YYYY-MM-DD'));
+                          setDatePickerOpen(false);
+                          message.success(`날짜가 ${date.format('YYYY-MM-DD')}로 이동되었습니다.`);
+                        }
+                      }}
+                    />
+                  </div>
+                }
+                trigger="click"
+                open={datePickerOpen}
+                onOpenChange={setDatePickerOpen}
+              >
+                <Tooltip title="지정 날짜로 이동 (주말/휴일 포함)" mouseEnterDelay={0.3} mouseLeaveDelay={0}>
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<CalendarOutlined />}
+                    className="todo-action-btn postpone-btn"
+                    style={{ color: '#38bdf8', padding: '0 4px' }}
+                  />
+                </Tooltip>
+              </Popover>
             )}
           </div>
 
